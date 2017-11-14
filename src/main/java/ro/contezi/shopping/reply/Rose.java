@@ -31,13 +31,13 @@ public class Rose implements ReplyProvider {
      */
     @Override
     public String reply(MessageFromFacebook message) {
-        return reply(message.getText().getText());
+        return reply(message.getSender().getId(), message.getText().getText());
     }
     
-    String reply(String text) {
+    String reply(String user, String text) {
         MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
 
-        map.add("user", "User");
+        map.add("user", user);
         map.add("send", "");
         map.add("message", text);
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);

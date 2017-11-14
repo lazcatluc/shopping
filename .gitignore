@@ -30,3 +30,4 @@ target
 log/
 **/static/api/*
 LOG_FILE_IS_UNDEFINED*
+application.properties

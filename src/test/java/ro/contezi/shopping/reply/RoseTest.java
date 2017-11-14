@@ -11,6 +11,6 @@ public class RoseTest {
     
     @Test
     public void canTalkToRose() throws Exception {
-        LOGGER.info(new Rose("http://ec2-54-215-197-164.us-west-1.compute.amazonaws.com/ui.php", new RestTemplate()).reply("where are you?"));
+        LOGGER.info(new Rose("http://ec2-54-215-197-164.us-west-1.compute.amazonaws.com/ui.php", new RestTemplate()).reply("catalin", "where are you?"));
     }
 }
