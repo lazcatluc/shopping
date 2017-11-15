@@ -21,7 +21,8 @@ public class ShoppingListReplyProvider implements ConditionalReplyProvider {
 
     @Override
     public String reply(MessageFromFacebook messageFromFacebook) {
-        return shoppingListView.displayShoppingList(shoppingListRepository.get(messageFromFacebook.getSender().getId()));
+        return shoppingListView.displayShoppingList(
+                shoppingListRepository.latestList(messageFromFacebook.getSender().getId()).getItems());
     }
 
 }

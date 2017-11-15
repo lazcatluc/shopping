@@ -16,7 +16,7 @@ public class ShoppingListRemove implements ConditionalReplyProvider {
 
     @Override
     public String reply(MessageFromFacebook messageFromFacebook) {
-        String shoppingListId = messageFromFacebook.getSender().getId();
+        String shoppingListId = shoppingListRepository.latestList(messageFromFacebook.getSender().getId()).getId();
         String item = messageFromFacebook.getText().getText().substring("remove".length()).trim();
         shoppingListRepository.remove(shoppingListId, item);
         return shoppingListView.displayShoppingList(shoppingListRepository.get(shoppingListId));

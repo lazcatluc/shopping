@@ -11,8 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.autoconfigure.jms.DefaultJmsListenerContainerFactoryConfigurer;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jms.annotation.EnableJms;
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
 import org.springframework.jms.config.JmsListenerContainerFactory;
@@ -24,9 +26,9 @@ import org.springframework.web.client.RestTemplate;
 
 import ro.contezi.shopping.FacebookMessageProcessor;
 import ro.contezi.shopping.FacebookWebhookSignatureValidator;
-import ro.contezi.shopping.InMemoryShoppingLists;
 import ro.contezi.shopping.ReplyProvider;
 import ro.contezi.shopping.ReplySender;
+import ro.contezi.shopping.ShoppingListJpaRepository;
 import ro.contezi.shopping.ShoppingListMessengerView;
 import ro.contezi.shopping.ShoppingListRepository;
 import ro.contezi.shopping.ShoppingListView;
@@ -41,7 +43,9 @@ import ro.contezi.shopping.reply.ShoppingListReplyProvider;
 
 @SpringBootApplication
 @EnableJms
+@EnableJpaRepositories("ro.contezi.shopping")
 @EnableAsync
+@EntityScan("ro.contezi.shopping")
 public class Shopping {
     
     @Value("${facebook.secret}")
@@ -56,6 +60,8 @@ public class Shopping {
     private String pageId;
     @Autowired
     private JmsTemplate jmsTemplate;
+    @Autowired
+    private ShoppingListJpaRepository shoppingListJpaRepository;
     
     @Bean
     public JmsListenerContainerFactory<?> myFactory(ConnectionFactory connectionFactory,
@@ -108,7 +114,7 @@ public class Shopping {
 
     @Bean
     public ShoppingListRepository shoppingListRepository() {
-        return new InMemoryShoppingLists();
+        return shoppingListJpaRepository;
     }
 
     @Bean
