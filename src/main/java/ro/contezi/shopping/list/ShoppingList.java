@@ -24,7 +24,7 @@ public class ShoppingList {
     private String author;
     @Column
     private ZonedDateTime createdDate = ZonedDateTime.now();
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "shoppingList", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "shoppingList", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("addedDate")
     private Set<ShoppingListItem> items = new LinkedHashSet<>();
     
@@ -49,7 +49,7 @@ public class ShoppingList {
     }
     
     public void setItems(Set<ShoppingListItem> items) {
-        this.items = new LinkedHashSet<>(items);
+        this.items = items;
     }
 
     public ShoppingListItem addItem(String item) {
@@ -68,11 +68,12 @@ public class ShoppingList {
         return myItem -> myItem.getItemName().equals(item);
     }
 
-    public void buyItem(String item) {
+    public ShoppingListItem buyItem(String item) {
         ShoppingListItem myItem = items.stream().filter(contains(item))
             .findFirst().orElseGet(() -> addItem(item));
 
         myItem.setBoughtDate(ZonedDateTime.now());
+        return myItem;
     }
 
     public ZonedDateTime getCreatedDate() {

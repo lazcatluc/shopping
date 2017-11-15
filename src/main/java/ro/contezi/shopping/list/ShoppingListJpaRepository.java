@@ -2,10 +2,13 @@ package ro.contezi.shopping.list;
 
 import java.util.Set;
 
+import javax.transaction.Transactional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
+@Transactional
 public interface ShoppingListJpaRepository extends JpaRepository<ShoppingList, String>, ShoppingListRepository {
     default void add(String shoppingListId, String item) {
         findOne(shoppingListId).addItem(item);

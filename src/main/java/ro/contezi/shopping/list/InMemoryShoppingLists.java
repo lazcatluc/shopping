@@ -45,12 +45,8 @@ public class InMemoryShoppingLists implements ShoppingListRepository {
     }
 
     @Override
-    public List<ShoppingList> findByAuthor(String author) {
-        ShoppingList shoppingList = new ShoppingList();
-        shoppingList.setId(author);
-        shoppingList.setAuthor(author);
-        shoppingList.setItems(get(author));
-        return Collections.singletonList(shoppingList);
+    public List<ShoppingList> findFirst1ByAuthorOrderByCreatedDateDesc(String author) {
+        return Collections.singletonList(getInitialized(author));
     }
 
     @Override

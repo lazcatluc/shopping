@@ -64,7 +64,7 @@ public class ShoppingListItem {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(itemName, shoppingList);
     }
 
     @Override
@@ -73,7 +73,8 @@ public class ShoppingListItem {
             return true;
         if (obj == null || getClass() != obj.getClass())
             return false;
-        return Objects.equals(this.id, ((ShoppingListItem)obj).id);
+        return Objects.equals(this.itemName, ((ShoppingListItem)obj).itemName)&&
+               Objects.equals(this.shoppingList, ((ShoppingListItem)obj).shoppingList);
     }
 
     @Override
