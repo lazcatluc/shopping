@@ -42,7 +42,7 @@ public class ShoppingTest {
     }
     
     @Test
-    public void contextLoads() throws Exception {
+    public void processesListsBasedOnMessages() throws Exception {
         buildMessage("hello!");
         buildMessage("list");
         buildMessage("add cheese");
@@ -55,6 +55,10 @@ public class ShoppingTest {
         
         ShoppingList myList = repository.latestList("1513421495405103");
         assertThat(myList.toString()).contains("cheese=true").contains("apples=false").doesNotContain("bread");
+        
+        buildMessage("new");
+        myList = repository.latestList("1513421495405103");
+        assertThat(myList.toString()).doesNotContain("cheese");
     }
 
     private void buildMessage(String message) throws Exception {

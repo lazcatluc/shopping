@@ -34,6 +34,7 @@ import ro.contezi.shopping.list.ShoppingListRepository;
 import ro.contezi.shopping.list.ShoppingListView;
 import ro.contezi.shopping.reply.CompositeReplyProvider;
 import ro.contezi.shopping.reply.FacebookReplySender;
+import ro.contezi.shopping.reply.NewShoppingList;
 import ro.contezi.shopping.reply.ReplyProvider;
 import ro.contezi.shopping.reply.ReplySender;
 import ro.contezi.shopping.reply.Rose;
@@ -104,7 +105,8 @@ public class Shopping {
                 new ShoppingListAdd(shoppingListRepository(), shoppingListView()),
                 new ShoppingListRemove(shoppingListRepository(), shoppingListView()),
                 new ShoppingListBuy(shoppingListRepository(), shoppingListView()),
-                new ShoppingListReplyProvider(shoppingListRepository(), shoppingListView())
+                new ShoppingListReplyProvider(shoppingListRepository(), shoppingListView()),
+                new NewShoppingList(shoppingListRepository(), shoppingListView())
             ));
     }
     
