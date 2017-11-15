@@ -1,4 +1,4 @@
-package ro.contezi.shopping;
+package ro.contezi.shopping.list;
 
 import java.util.Collections;
 import java.util.HashMap;

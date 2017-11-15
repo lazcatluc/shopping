@@ -1,4 +1,4 @@
-package ro.contezi.shopping;
+package ro.contezi.shopping.facebook;
 
 import java.nio.charset.Charset;
 import java.security.InvalidKeyException;

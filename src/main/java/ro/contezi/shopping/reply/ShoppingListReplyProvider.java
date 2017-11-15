@@ -1,8 +1,8 @@
 package ro.contezi.shopping.reply;
 
-import ro.contezi.shopping.ShoppingListRepository;
-import ro.contezi.shopping.ShoppingListView;
-import ro.contezi.shopping.model.MessageFromFacebook;
+import ro.contezi.shopping.facebook.MessageFromFacebook;
+import ro.contezi.shopping.list.ShoppingListRepository;
+import ro.contezi.shopping.list.ShoppingListView;
 
 public class ShoppingListReplyProvider implements ConditionalReplyProvider {
 

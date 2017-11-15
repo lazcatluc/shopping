@@ -1,4 +1,4 @@
-package ro.contezi.shopping.config;
+package ro.contezi.shopping.facebook;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
@@ -13,7 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jms.core.JmsTemplate;
 
-import ro.contezi.shopping.config.Webhook;
+import ro.contezi.shopping.facebook.Webhook;
 
 public class WebhookTest {
     private Webhook controller;

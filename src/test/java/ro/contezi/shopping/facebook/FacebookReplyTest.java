@@ -1,4 +1,4 @@
-package ro.contezi.shopping.model;
+package ro.contezi.shopping.facebook;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -7,6 +7,9 @@ import org.apache.log4j.Logger;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import ro.contezi.shopping.facebook.FacebookReply;
+import ro.contezi.shopping.facebook.MessageFromFacebook;
 
 public class FacebookReplyTest {
     

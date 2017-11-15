@@ -1,4 +1,4 @@
-package ro.contezi.shopping.config;
+package ro.contezi.shopping.facebook;
 
 import java.io.IOException;
 
@@ -16,9 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import ro.contezi.shopping.SignatureValidator;
-import ro.contezi.shopping.model.MessageFromFacebook;
 
 @RequestMapping("/webhook")
 public class Webhook {
@@ -64,7 +61,7 @@ public class Webhook {
         return receiveMessage(body);
     }
 
-    ResponseEntity<Void> receiveMessage(String body) throws IOException{
+    public ResponseEntity<Void> receiveMessage(String body) throws IOException{
         MessageFromFacebook messageFromFacebook = new ObjectMapper().readValue(body, MessageFromFacebook.class);
         if (!pageId.equals(messageFromFacebook.getSender().getId())) {
             jmsTemplate.convertAndSend("facebook", messageFromFacebook);

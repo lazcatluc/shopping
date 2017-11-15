@@ -2,8 +2,7 @@ package ro.contezi.shopping.reply;
 
 import java.util.List;
 
-import ro.contezi.shopping.ReplyProvider;
-import ro.contezi.shopping.model.MessageFromFacebook;
+import ro.contezi.shopping.facebook.MessageFromFacebook;
 
 public class CompositeReplyProvider implements ReplyProvider {
     private final ReplyProvider defaultReply;

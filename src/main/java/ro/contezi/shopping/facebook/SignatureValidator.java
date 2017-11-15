@@ -1,4 +1,4 @@
-package ro.contezi.shopping;
+package ro.contezi.shopping.facebook;
 
 @FunctionalInterface
 public interface SignatureValidator {

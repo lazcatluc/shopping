@@ -1,4 +1,4 @@
-package ro.contezi.shopping.model;
+package ro.contezi.shopping.facebook;
 
 public class FacebookReply {
     private final FacebookUser recipient;

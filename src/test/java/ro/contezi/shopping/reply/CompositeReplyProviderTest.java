@@ -6,7 +6,7 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
-import ro.contezi.shopping.model.MessageFromFacebook;
+import ro.contezi.shopping.facebook.MessageFromFacebook;
 
 public class CompositeReplyProviderTest {
     

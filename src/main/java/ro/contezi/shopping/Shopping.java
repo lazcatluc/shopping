@@ -1,4 +1,4 @@
-package ro.contezi.shopping.config;
+package ro.contezi.shopping;
 
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
@@ -24,17 +24,18 @@ import org.springframework.jms.support.converter.MessageType;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.client.RestTemplate;
 
-import ro.contezi.shopping.FacebookMessageProcessor;
-import ro.contezi.shopping.FacebookWebhookSignatureValidator;
-import ro.contezi.shopping.ReplyProvider;
-import ro.contezi.shopping.ReplySender;
-import ro.contezi.shopping.ShoppingListJpaRepository;
-import ro.contezi.shopping.ShoppingListMessengerView;
-import ro.contezi.shopping.ShoppingListRepository;
-import ro.contezi.shopping.ShoppingListView;
-import ro.contezi.shopping.SignatureValidator;
+import ro.contezi.shopping.facebook.FacebookMessageProcessor;
+import ro.contezi.shopping.facebook.FacebookWebhookSignatureValidator;
+import ro.contezi.shopping.facebook.SignatureValidator;
+import ro.contezi.shopping.facebook.Webhook;
+import ro.contezi.shopping.list.ShoppingListJpaRepository;
+import ro.contezi.shopping.list.ShoppingListMessengerView;
+import ro.contezi.shopping.list.ShoppingListRepository;
+import ro.contezi.shopping.list.ShoppingListView;
 import ro.contezi.shopping.reply.CompositeReplyProvider;
 import ro.contezi.shopping.reply.FacebookReplySender;
+import ro.contezi.shopping.reply.ReplyProvider;
+import ro.contezi.shopping.reply.ReplySender;
 import ro.contezi.shopping.reply.Rose;
 import ro.contezi.shopping.reply.ShoppingListAdd;
 import ro.contezi.shopping.reply.ShoppingListBuy;
@@ -43,9 +44,9 @@ import ro.contezi.shopping.reply.ShoppingListReplyProvider;
 
 @SpringBootApplication
 @EnableJms
-@EnableJpaRepositories("ro.contezi.shopping")
+@EnableJpaRepositories
 @EnableAsync
-@EntityScan("ro.contezi.shopping")
+@EntityScan
 public class Shopping {
     
     @Value("${facebook.secret}")

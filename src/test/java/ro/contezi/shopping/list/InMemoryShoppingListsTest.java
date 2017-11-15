@@ -1,9 +1,11 @@
-package ro.contezi.shopping;
+package ro.contezi.shopping.list;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import ro.contezi.shopping.list.InMemoryShoppingLists;
 
 public class InMemoryShoppingListsTest {
     

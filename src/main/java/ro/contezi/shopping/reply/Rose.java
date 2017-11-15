@@ -10,8 +10,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import ro.contezi.shopping.ReplyProvider;
-import ro.contezi.shopping.model.MessageFromFacebook;
+import ro.contezi.shopping.facebook.MessageFromFacebook;
 
 public class Rose implements ReplyProvider {
     

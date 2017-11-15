@@ -1,6 +1,6 @@
-package ro.contezi.shopping;
+package ro.contezi.shopping.reply;
 
-import ro.contezi.shopping.model.MessageFromFacebook;
+import ro.contezi.shopping.facebook.MessageFromFacebook;
 
 public interface ReplyProvider {
 

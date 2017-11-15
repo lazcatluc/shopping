@@ -1,4 +1,4 @@
-package ro.contezi.shopping.model;
+package ro.contezi.shopping.facebook;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

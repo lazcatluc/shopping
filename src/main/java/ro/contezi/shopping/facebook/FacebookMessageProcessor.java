@@ -1,12 +1,10 @@
-package ro.contezi.shopping;
+package ro.contezi.shopping.facebook;
 
 import org.apache.log4j.Logger;
 import org.springframework.jms.annotation.JmsListener;
 
-import ro.contezi.shopping.model.FacebookMessage;
-import ro.contezi.shopping.model.FacebookReply;
-import ro.contezi.shopping.model.FacebookUser;
-import ro.contezi.shopping.model.MessageFromFacebook;
+import ro.contezi.shopping.reply.ReplyProvider;
+import ro.contezi.shopping.reply.ReplySender;
 
 public class FacebookMessageProcessor {
 

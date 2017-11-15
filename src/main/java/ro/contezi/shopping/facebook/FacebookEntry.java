@@ -1,4 +1,4 @@
-package ro.contezi.shopping.model;
+package ro.contezi.shopping.facebook;
 
 import java.util.List;
 

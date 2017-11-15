@@ -1,10 +1,12 @@
-package ro.contezi.shopping.model;
+package ro.contezi.shopping.facebook;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import ro.contezi.shopping.facebook.MessageFromFacebook;
 
 public class FacebookEntryTest {
 

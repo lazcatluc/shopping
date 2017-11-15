@@ -1,4 +1,4 @@
-package ro.contezi.shopping.config;
+package ro.contezi.shopping;
 
 import org.apache.log4j.Logger;
 import org.junit.Test;
@@ -10,8 +10,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import ro.contezi.shopping.ReplySender;
-import ro.contezi.shopping.config.ShoppingTest.ShoppingTestConfig;
+import ro.contezi.shopping.Shopping;
+import ro.contezi.shopping.ShoppingTest.ShoppingTestConfig;
+import ro.contezi.shopping.facebook.Webhook;
+import ro.contezi.shopping.reply.ReplySender;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ShoppingTestConfig.class)
