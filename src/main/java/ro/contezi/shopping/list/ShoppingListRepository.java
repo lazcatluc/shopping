@@ -1,14 +1,14 @@
 package ro.contezi.shopping.list;
 
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 public interface ShoppingListRepository {
     void add(String shoppingListId, String item);
     void remove(String shoppingListId, String item);
     void buy(String shoppingListId, String item);
     ShoppingList save(ShoppingList list);
-    Map<String, Boolean> get(String shoppingListId);
+    Set<ShoppingListItem> get(String shoppingListId);
     List<ShoppingList> findByAuthor(String author);
     default ShoppingList latestList(String author) {
         List<ShoppingList> lists = findByAuthor(author);

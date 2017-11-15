@@ -1,7 +1,7 @@
 package ro.contezi.shopping.list;
 
-import java.util.Map;
+import java.util.Set;
 
 public interface ShoppingListView {
-    String displayShoppingList(Map<String, Boolean> shoppingList);
+    String displayShoppingList(Set<ShoppingListItem> shoppingList);
 }

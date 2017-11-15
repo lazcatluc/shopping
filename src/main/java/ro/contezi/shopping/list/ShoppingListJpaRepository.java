@@ -1,6 +1,6 @@
 package ro.contezi.shopping.list;
 
-import java.util.Map;
+import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -19,7 +19,7 @@ public interface ShoppingListJpaRepository extends JpaRepository<ShoppingList, S
         findOne(shoppingListId).buyItem(item);
     }
     
-    default Map<String, Boolean> get(String shoppingListId) {
+    default Set<ShoppingListItem> get(String shoppingListId) {
         return findOne(shoppingListId).getItems();
     }
     

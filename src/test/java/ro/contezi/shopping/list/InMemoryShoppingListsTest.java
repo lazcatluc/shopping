@@ -20,7 +20,7 @@ public class InMemoryShoppingListsTest {
     public void holdsItemAdded() {
         inMemoryShoppingLists.add("1", "item");
         
-        assertThat(inMemoryShoppingLists.toString()).isEqualTo("{1={item=false}}");
+        assertThat(inMemoryShoppingLists.toString()).contains("[item=false]");
     }
 
     @Test
@@ -28,7 +28,7 @@ public class InMemoryShoppingListsTest {
         inMemoryShoppingLists.add("1", "item");
         inMemoryShoppingLists.buy("1", "item");
         
-        assertThat(inMemoryShoppingLists.toString()).isEqualTo("{1={item=true}}");
+        assertThat(inMemoryShoppingLists.toString()).contains("[item=true]");
     }
     
     @Test
@@ -37,6 +37,6 @@ public class InMemoryShoppingListsTest {
         inMemoryShoppingLists.add("1", "another-item");
         inMemoryShoppingLists.remove("1", "item");
         
-        assertThat(inMemoryShoppingLists.toString()).isEqualTo("{1={another-item=false}}");
+        assertThat(inMemoryShoppingLists.toString()).contains("[another-item=false]");
     }
 }

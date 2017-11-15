@@ -1,17 +1,20 @@
 package ro.contezi.shopping.list;
 
+import java.time.ZonedDateTime;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.LinkedHashSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
+import java.util.function.Predicate;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 
 @Entity
 public class ShoppingList {
@@ -19,8 +22,11 @@ public class ShoppingList {
     private String id = UUID.randomUUID().toString();
     @Column
     private String author;
-    @ElementCollection(fetch = FetchType.EAGER)
-    private Map<String, Boolean> items = new LinkedHashMap<>();
+    @Column
+    private ZonedDateTime createdDate = ZonedDateTime.now();
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "shoppingList", cascade = CascadeType.ALL)
+    @OrderBy("addedDate")
+    private Set<ShoppingListItem> items = new LinkedHashSet<>();
     
     public String getAuthor() {
         return author;
@@ -38,24 +44,43 @@ public class ShoppingList {
         this.id = id;
     }
     
-    public Map<String, Boolean> getItems() {
-        return Collections.unmodifiableMap(items);
+    public Set<ShoppingListItem> getItems() {
+        return Collections.unmodifiableSet(items);
     }
     
-    public void setItems(Map<String, Boolean> items) {
-        this.items = new HashMap<>(items);
+    public void setItems(Set<ShoppingListItem> items) {
+        this.items = new LinkedHashSet<>(items);
     }
 
-    public void addItem(String item) {
-        items.put(item, false);
+    public ShoppingListItem addItem(String item) {
+        ShoppingListItem myItem = new ShoppingListItem();
+        myItem.setShoppingList(this);
+        myItem.setItemName(item);
+        items.add(myItem);
+        return myItem;
     }
 
     public void removeItem(String item) {
-        items.remove(item);
+        items.removeIf(contains(item));
+    }
+
+    private Predicate<? super ShoppingListItem> contains(String item) {
+        return myItem -> myItem.getItemName().equals(item);
     }
 
     public void buyItem(String item) {
-        items.put(item, true);
+        ShoppingListItem myItem = items.stream().filter(contains(item))
+            .findFirst().orElseGet(() -> addItem(item));
+
+        myItem.setBoughtDate(ZonedDateTime.now());
+    }
+
+    public ZonedDateTime getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(ZonedDateTime createdDate) {
+        this.createdDate = createdDate;
     }
 
     @Override
@@ -70,6 +95,12 @@ public class ShoppingList {
         if (obj == null || getClass() != obj.getClass())
             return false;
         return Objects.equals(this.id, ((ShoppingList)obj).id);
+    }
+
+    @Override
+    public String toString() {
+        return "ShoppingList [id=" + id + ", author=" + author + ", createdDate=" + createdDate + ", items=" + items
+                + "]";
     }
     
 }
