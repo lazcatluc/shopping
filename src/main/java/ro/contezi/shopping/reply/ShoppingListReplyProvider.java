@@ -1,17 +1,17 @@
 package ro.contezi.shopping.reply;
 
 import ro.contezi.shopping.facebook.MessageFromFacebook;
-import ro.contezi.shopping.list.ShoppingListRepository;
+import ro.contezi.shopping.list.LatestList;
 import ro.contezi.shopping.list.ShoppingListView;
 
 public class ShoppingListReplyProvider implements ConditionalReplyProvider {
 
-    private final ShoppingListRepository shoppingListRepository;
     private final ShoppingListView shoppingListView;
+    private final LatestList latestList;
     
-    public ShoppingListReplyProvider(ShoppingListRepository shoppingListRepository, ShoppingListView shoppingListView) {
-        this.shoppingListRepository = shoppingListRepository;
+    public ShoppingListReplyProvider(ShoppingListView shoppingListView, LatestList latestList) {
         this.shoppingListView = shoppingListView;
+        this.latestList = latestList;
     }
 
     @Override
@@ -21,8 +21,7 @@ public class ShoppingListReplyProvider implements ConditionalReplyProvider {
 
     @Override
     public String reply(MessageFromFacebook messageFromFacebook) {
-        return shoppingListView.displayShoppingList(
-                shoppingListRepository.latestList(messageFromFacebook.getSender().getId()).getItems());
+        return shoppingListView.displayShoppingList(latestList.get(messageFromFacebook.getSender().getId()).getItems());
     }
 
 }

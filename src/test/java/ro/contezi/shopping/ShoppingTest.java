@@ -6,7 +6,6 @@ import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,8 +14,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import ro.contezi.shopping.ShoppingTest.ShoppingTestConfig;
 import ro.contezi.shopping.facebook.Webhook;
+import ro.contezi.shopping.list.LatestList;
 import ro.contezi.shopping.list.ShoppingList;
-import ro.contezi.shopping.list.ShoppingListRepository;
 import ro.contezi.shopping.reply.ReplySender;
 
 @RunWith(SpringRunner.class)
@@ -29,8 +28,9 @@ public class ShoppingTest {
     private Webhook webhook;
     
     @Autowired
-    @Qualifier("shoppingListRepository")
-    private ShoppingListRepository repository;
+    private LatestList latestList;
+    
+    private final String facebookPageUserId = "1513421495405103";
 
     @Configuration
     @Import(Shopping.class)
@@ -39,6 +39,13 @@ public class ShoppingTest {
         public ReplySender replySender() {
             return LOGGER::info;
         }
+    }
+    
+    @Test
+    public void getsLatestList() throws Exception {
+        ShoppingList myList = latestList.get(facebookPageUserId);
+        
+        assertThat(myList.getAuthor().getFirstName()).isEqualTo("Catalin");
     }
     
     @Test
@@ -53,19 +60,19 @@ public class ShoppingTest {
         buildMessage("add apples");
         buildMessage("remove bread");
         
-        ShoppingList myList = repository.latestList("1513421495405103");
+        ShoppingList myList = latestList.get(facebookPageUserId);
         assertThat(myList.toString()).contains("cheese=true").contains("apples=false").doesNotContain("bread");
         
         buildMessage("new");
-        myList = repository.latestList("1513421495405103");
+        myList = latestList.get(facebookPageUserId);
         assertThat(myList.toString()).doesNotContain("cheese");
     }
 
     private void buildMessage(String message) throws Exception {
         webhook.receiveMessage("{\"object\":\"page\",\"entry\":[{\"id\":\"535405013470180\",\"time\":1508051848445,\"messaging\":"
-                + "[{\"sender\":{\"id\":\"1513421495405103\"},\"recipient\":{\"id\":\"535405013470180\"},\"timestamp\":1508051847330,\"message\":"
+                + "[{\"sender\":{\"id\":\"" + facebookPageUserId + "\"},\"recipient\":{\"id\":\"535405013470180\"},\"timestamp\":1508051847330,\"message\":"
                 + "{\"mid\":\"mid.$cAAHm8o_kpEtlUCpQolfHuUHC30ja\",\"seq\":1171418,\"text\":\"" + message + "\"}}]}]}");
 
-        Thread.sleep(100);
+        Thread.sleep(200);
     }
 }

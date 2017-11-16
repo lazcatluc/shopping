@@ -13,6 +13,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 
@@ -20,19 +21,19 @@ import javax.persistence.OrderBy;
 public class ShoppingList {
     @Id
     private String id = UUID.randomUUID().toString();
-    @Column
-    private String author;
+    @ManyToOne
+    private Author author;
     @Column
     private ZonedDateTime createdDate = ZonedDateTime.now();
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "shoppingList", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("addedDate")
     private Set<ShoppingListItem> items = new LinkedHashSet<>();
     
-    public String getAuthor() {
+    public Author getAuthor() {
         return author;
     }
 
-    public void setAuthor(String author) {
+    public void setAuthor(Author author) {
         this.author = author;
     }
 

@@ -24,7 +24,9 @@ public class InMemoryShoppingLists implements ShoppingListRepository {
         return shoppingLists.computeIfAbsent(shoppingListId, s -> {
             ShoppingList list = new ShoppingList();
             list.setId(shoppingListId);
-            list.setAuthor(shoppingListId);
+            Author author = new Author();
+            author.setId(shoppingListId);
+            list.setAuthor(author);
             return list;
         });
     }
@@ -45,8 +47,8 @@ public class InMemoryShoppingLists implements ShoppingListRepository {
     }
 
     @Override
-    public List<ShoppingList> findFirst1ByAuthorOrderByCreatedDateDesc(String author) {
-        return Collections.singletonList(getInitialized(author));
+    public List<ShoppingList> findFirst1ByAuthorOrderByCreatedDateDesc(Author author) {
+        return Collections.singletonList(getInitialized(author.getId()));
     }
 
     @Override

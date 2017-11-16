@@ -28,6 +28,10 @@ import ro.contezi.shopping.facebook.FacebookMessageProcessor;
 import ro.contezi.shopping.facebook.FacebookWebhookSignatureValidator;
 import ro.contezi.shopping.facebook.SignatureValidator;
 import ro.contezi.shopping.facebook.Webhook;
+import ro.contezi.shopping.list.AuthorJpaRepository;
+import ro.contezi.shopping.list.AuthorRepository;
+import ro.contezi.shopping.list.GraphApi;
+import ro.contezi.shopping.list.LatestList;
 import ro.contezi.shopping.list.ShoppingListJpaRepository;
 import ro.contezi.shopping.list.ShoppingListMessengerView;
 import ro.contezi.shopping.list.ShoppingListRepository;
@@ -52,8 +56,12 @@ public class Shopping {
     
     @Value("${facebook.secret}")
     private String facebookSecret;
+    @Value("${facebook.graph.api.host}")
+    private String graphApiHost;
     @Value("${facebook.graph.api.url}")
     private String graphApiUrl;
+    @Value("${facebook.graph.api.version}")
+    private String graphApiVersion;
     @Value("${facebook.token}")
     private String facebookToken;
     @Value("${rose.url}")
@@ -64,6 +72,8 @@ public class Shopping {
     private JmsTemplate jmsTemplate;
     @Autowired
     private ShoppingListJpaRepository shoppingListJpaRepository;
+    @Autowired
+    private AuthorJpaRepository authorJpaRepository;
     
     @Bean
     public JmsListenerContainerFactory<?> myFactory(ConnectionFactory connectionFactory,
@@ -100,13 +110,28 @@ public class Shopping {
     }
     
     @Bean
+    public AuthorRepository authorRepository() {
+        return new AuthorRepository(authorJpaRepository, graphApi());
+    }
+    
+    @Bean
+    public GraphApi graphApi() {
+        return new GraphApi(graphApiHost, graphApiVersion, facebookToken, restTemplate());
+    }
+
+    @Bean
+    public LatestList latestList() {
+        return new LatestList(shoppingListRepository(), authorRepository());
+    }
+    
+    @Bean
     public ReplyProvider replyProvider() throws URISyntaxException {
         return new CompositeReplyProvider(rose(), Arrays.asList(
-                new ShoppingListAdd(shoppingListRepository(), shoppingListView()),
-                new ShoppingListRemove(shoppingListRepository(), shoppingListView()),
-                new ShoppingListBuy(shoppingListRepository(), shoppingListView()),
-                new ShoppingListReplyProvider(shoppingListRepository(), shoppingListView()),
-                new NewShoppingList(shoppingListRepository(), shoppingListView())
+                new ShoppingListAdd(shoppingListRepository(), shoppingListView(), latestList()),
+                new ShoppingListRemove(shoppingListRepository(), shoppingListView(), latestList()),
+                new ShoppingListBuy(shoppingListRepository(), shoppingListView(), latestList()),
+                new ShoppingListReplyProvider(shoppingListView(), latestList()),
+                new NewShoppingList(shoppingListRepository(), shoppingListView(), authorRepository())
             ));
     }
     
