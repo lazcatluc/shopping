@@ -45,7 +45,7 @@ public class InMemoryShoppingLists implements ShoppingListRepository {
     }
 
     @Override
-    public ShoppingList save(ShoppingList list) {
+    public ShoppingList saveShoppingList(ShoppingList list) {
         shoppingLists.put(list.getId(), list);
         return list;
     }

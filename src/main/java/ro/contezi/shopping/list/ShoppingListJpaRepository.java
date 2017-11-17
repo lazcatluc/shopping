@@ -1,9 +1,7 @@
 package ro.contezi.shopping.list;
 
 import java.util.Set;
-
 import javax.transaction.Transactional;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -31,6 +29,10 @@ public interface ShoppingListJpaRepository extends JpaRepository<ShoppingList, S
         findOne.shareWith(author);
         save(findOne);
         return findOne;
+    }
+
+    default ShoppingList saveShoppingList(ShoppingList list) {
+        return save(list);
     }
     
 }

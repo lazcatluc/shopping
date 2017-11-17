@@ -22,8 +22,8 @@ public class NewShoppingList implements ConditionalReplyProvider {
     public String reply(MessageFromFacebook messageFromFacebook) {
         ShoppingList shoppingList = new ShoppingList();
         shoppingList.setAuthor(authorRepository.getInitializedAuthor(messageFromFacebook.getSender().getId()));
-        
-        return shoppingListView.displayShoppingList(shoppingListRepository.save(shoppingList).getItems());
+
+        return shoppingListView.displayShoppingList(shoppingListRepository.saveShoppingList(shoppingList).getItems());
     }
 
     @Override

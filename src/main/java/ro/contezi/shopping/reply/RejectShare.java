@@ -11,7 +11,8 @@ public class RejectShare implements ConditionalReplyProvider {
 
     @Override
     public boolean applies(MessageFromFacebook messageFromFacebook) {
-        return messageFromFacebook.getText().getText().startsWith("reject_share ");
+        return messageFromFacebook.getText().getQuickReply() != null &&
+                messageFromFacebook.getText().getQuickReply().getPayload().startsWith("reject_share ");
     }
 
 }
