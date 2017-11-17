@@ -1,17 +1,20 @@
 package ro.contezi.shopping.reply;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 import java.util.Arrays;
 
 import org.junit.Test;
 
 import ro.contezi.shopping.facebook.MessageFromFacebook;
+import ro.contezi.shopping.list.AuthorRepository;
 
 public class CompositeReplyProviderTest {
     
     private boolean applies;
-    private CompositeReplyProvider compositeReply = new CompositeReplyProvider(s -> "default", 
+    private AuthorRepository authorRepository = mock(AuthorRepository.class);
+    private CompositeReplyProvider compositeReply = new CompositeReplyProvider(s -> "default", authorRepository,
             Arrays.asList(new ConditionalReplyProvider() {
                 
                 @Override

@@ -13,6 +13,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
@@ -23,6 +24,8 @@ public class ShoppingList {
     private String id = UUID.randomUUID().toString();
     @ManyToOne
     private Author author;
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<Author> shares;
     @Column
     private ZonedDateTime createdDate = ZonedDateTime.now();
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "shoppingList", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -64,6 +67,10 @@ public class ShoppingList {
     public void removeItem(String item) {
         items.removeIf(contains(item));
     }
+    
+    public boolean shareWith(Author author) {
+        return shares.add(author);
+    }
 
     private Predicate<? super ShoppingListItem> contains(String item) {
         return myItem -> myItem.getItemName().equals(item);
@@ -83,6 +90,14 @@ public class ShoppingList {
 
     public void setCreatedDate(ZonedDateTime createdDate) {
         this.createdDate = createdDate;
+    }
+
+    public Set<Author> getShares() {
+        return shares;
+    }
+
+    public void setShares(Set<Author> shares) {
+        this.shares = shares;
     }
 
     @Override

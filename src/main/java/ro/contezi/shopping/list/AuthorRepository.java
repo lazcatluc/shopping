@@ -1,6 +1,14 @@
 package ro.contezi.shopping.list;
 
+import java.util.List;
+
+import org.apache.log4j.Logger;
+import org.springframework.dao.DataIntegrityViolationException;
+
 public class AuthorRepository {
+    
+    private static final Logger LOGGER = Logger.getLogger(AuthorRepository.class);
+    
     private final AuthorJpaRepository authorJpaRepository;
     private final GraphApi graphApi;
     
@@ -15,6 +23,24 @@ public class AuthorRepository {
             return author;
         }
         author = graphApi.getUserInfo(authorId);
-        return authorJpaRepository.save(author);
+        try {
+            return authorJpaRepository.save(author);
+        }
+        catch (DataIntegrityViolationException dive) {
+            LOGGER.warn("Saved user " + author + " twice on two parallel messages", dive);
+        }
+        return author;
+    }
+
+    public List<Author> findByFirstNameIgnoreCaseAndLastNameIgnoreCase(String firstName, String lastName) {
+        return authorJpaRepository.findByFirstNameIgnoreCaseAndLastNameIgnoreCase(firstName, lastName);
+    }
+
+    public List<Author> findByFirstNameIgnoreCase(String name) {
+        return authorJpaRepository.findByFirstNameIgnoreCase(name);
+    }
+
+    public Author findWithLists(String authorId) {
+        return authorJpaRepository.findWithLists(authorId);
     }
 }

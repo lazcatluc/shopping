@@ -1,8 +1,6 @@
 package ro.contezi.shopping.list;
 
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -47,14 +45,16 @@ public class InMemoryShoppingLists implements ShoppingListRepository {
     }
 
     @Override
-    public List<ShoppingList> findFirst1ByAuthorOrderByCreatedDateDesc(Author author) {
-        return Collections.singletonList(getInitialized(author.getId()));
-    }
-
-    @Override
     public ShoppingList save(ShoppingList list) {
         shoppingLists.put(list.getId(), list);
         return list;
+    }
+
+    @Override
+    public ShoppingList share(String shoppingListId, Author author) {
+        ShoppingList initialized = getInitialized(shoppingListId);
+        initialized.shareWith(author);
+        return initialized;
     }
 
 }

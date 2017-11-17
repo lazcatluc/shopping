@@ -1,10 +1,16 @@
 package ro.contezi.shopping.list;
 
+import java.util.Collections;
 import java.util.Objects;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -29,6 +35,20 @@ public class Author {
     private String locale;
     @Column
     private int timezone;
+    @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
+    @OrderBy("createdDate DESC")
+    private Set<ShoppingList> myLists;
+    @ManyToMany(mappedBy = "shares", fetch = FetchType.LAZY)
+    @OrderBy("createdDate DESC")
+    private Set<ShoppingList> listSharedWithMe;
+    
+    public Set<ShoppingList> getMyLists() {
+        return Collections.unmodifiableSet(myLists);
+    }
+
+    public Set<ShoppingList> getListSharedWithMe() {
+        return Collections.unmodifiableSet(listSharedWithMe);
+    }
 
     public String getId() {
         return id;

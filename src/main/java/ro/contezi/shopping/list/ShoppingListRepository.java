@@ -1,6 +1,5 @@
 package ro.contezi.shopping.list;
 
-import java.util.List;
 import java.util.Set;
 
 public interface ShoppingListRepository {
@@ -9,5 +8,5 @@ public interface ShoppingListRepository {
     void buy(String shoppingListId, String item);
     ShoppingList save(ShoppingList list);
     Set<ShoppingListItem> get(String shoppingListId);
-    List<ShoppingList> findFirst1ByAuthorOrderByCreatedDateDesc(Author author);
+    ShoppingList share(String shoppingListId, Author author);
 }

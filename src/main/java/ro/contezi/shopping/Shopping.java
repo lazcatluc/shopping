@@ -4,6 +4,7 @@ import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.Collections;
 
 import javax.jms.ConnectionFactory;
 
@@ -36,12 +37,17 @@ import ro.contezi.shopping.list.ShoppingListJpaRepository;
 import ro.contezi.shopping.list.ShoppingListMessengerView;
 import ro.contezi.shopping.list.ShoppingListRepository;
 import ro.contezi.shopping.list.ShoppingListView;
+import ro.contezi.shopping.reply.AcceptShare;
+import ro.contezi.shopping.reply.CompositeQuickReplyProvider;
 import ro.contezi.shopping.reply.CompositeReplyProvider;
 import ro.contezi.shopping.reply.FacebookReplySender;
 import ro.contezi.shopping.reply.NewShoppingList;
+import ro.contezi.shopping.reply.QuickReplyProvider;
+import ro.contezi.shopping.reply.RejectShare;
 import ro.contezi.shopping.reply.ReplyProvider;
 import ro.contezi.shopping.reply.ReplySender;
 import ro.contezi.shopping.reply.Rose;
+import ro.contezi.shopping.reply.ShareList;
 import ro.contezi.shopping.reply.ShoppingListAdd;
 import ro.contezi.shopping.reply.ShoppingListBuy;
 import ro.contezi.shopping.reply.ShoppingListRemove;
@@ -126,14 +132,22 @@ public class Shopping {
     
     @Bean
     public ReplyProvider replyProvider() throws URISyntaxException {
-        return new CompositeReplyProvider(rose(), Arrays.asList(
+        return new CompositeReplyProvider(rose(), authorRepository(), Arrays.asList(
                 new ShoppingListAdd(shoppingListRepository(), shoppingListView(), latestList()),
                 new ShoppingListRemove(shoppingListRepository(), shoppingListView(), latestList()),
                 new ShoppingListBuy(shoppingListRepository(), shoppingListView(), latestList()),
                 new ShoppingListReplyProvider(shoppingListView(), latestList()),
+                new ShareList(latestList(), authorRepository(), replySender()),
+                new AcceptShare(shoppingListRepository(), authorRepository(), shoppingListView()),
+                new RejectShare(),
                 new NewShoppingList(shoppingListRepository(), shoppingListView(), authorRepository())
             ));
     }
+    
+    @Bean
+    public QuickReplyProvider quickReplyProvider() {
+        return new CompositeQuickReplyProvider(Collections.emptyList());
+    }    
     
     @Bean
     public ShoppingListView shoppingListView() {
@@ -152,9 +166,9 @@ public class Shopping {
     
     @Bean
     public FacebookMessageProcessor facebookMessageProcessor() throws URISyntaxException {
-        return new FacebookMessageProcessor(replyProvider(), replySender());
+        return new FacebookMessageProcessor(replyProvider(), replySender(), quickReplyProvider());
     }
-    
+
     @Bean
     public Webhook webhook() throws InvalidKeyException, NoSuchAlgorithmException {
         return new Webhook(signatureValidator(), jmsTemplate, pageId);

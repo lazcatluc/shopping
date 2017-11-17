@@ -26,4 +26,11 @@ public interface ShoppingListJpaRepository extends JpaRepository<ShoppingList, S
         return findOne(shoppingListId).getItems();
     }
     
+    default ShoppingList share(String shoppingListId, Author author) {
+        ShoppingList findOne = findOne(shoppingListId);
+        findOne.shareWith(author);
+        save(findOne);
+        return findOne;
+    }
+    
 }
