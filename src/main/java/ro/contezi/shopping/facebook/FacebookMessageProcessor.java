@@ -1,10 +1,8 @@
 package ro.contezi.shopping.facebook;
 
 import java.util.List;
-
 import org.apache.log4j.Logger;
 import org.springframework.jms.annotation.JmsListener;
-
 import ro.contezi.shopping.reply.QuickReplyProvider;
 import ro.contezi.shopping.reply.ReplyProvider;
 import ro.contezi.shopping.reply.ReplySender;
@@ -30,7 +28,7 @@ public class FacebookMessageProcessor {
         LOGGER.info(messageFromFacebook);
         String reply = replyProvider.reply(messageFromFacebook);
         List<FacebookQuickReply> quickReplies = quickReplyProvider.reply(messageFromFacebook);
-        FacebookMessage message = new FacebookMessage(reply, quickReplies);
+        FacebookMessage message = new FacebookMessage(reply, quickReplies.isEmpty() ? null : quickReplies, null);
         FacebookUser sender = messageFromFacebook.getSender();
         FacebookReply facebookReply = new FacebookReply(sender, message);
         replySender.send(facebookReply);

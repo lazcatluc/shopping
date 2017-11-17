@@ -2,18 +2,17 @@ package ro.contezi.shopping.list;
 
 import java.time.ZonedDateTime;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
@@ -24,8 +23,9 @@ public class ShoppingList {
     private String id = UUID.randomUUID().toString();
     @ManyToOne
     private Author author;
-    @ManyToMany(fetch = FetchType.EAGER)
-    private Set<Author> shares;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "shoppingList", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("shareDate DESC")
+    private Set<SharedList> shares;
     @Column
     private ZonedDateTime createdDate = ZonedDateTime.now();
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "shoppingList", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -69,7 +69,14 @@ public class ShoppingList {
     }
     
     public boolean shareWith(Author author) {
-        return shares.add(author);
+        SharedList share = new SharedList();
+        share.setAuthor(author);
+        share.setShoppingList(this);
+        return shares.add(share);
+    }
+
+    public boolean isSharedWith(Author anotherAuthor) {
+        return shares.stream().map(SharedList::getAuthor).anyMatch(anotherAuthor::equals);
     }
 
     private Predicate<? super ShoppingListItem> contains(String item) {
@@ -92,14 +99,21 @@ public class ShoppingList {
         this.createdDate = createdDate;
     }
 
-    public Set<Author> getShares() {
+    public Set<SharedList> getShares() {
         return shares;
     }
 
-    public void setShares(Set<Author> shares) {
+    public void setShares(Set<SharedList> shares) {
         this.shares = shares;
     }
 
+    public Set<Author> getAllInterestedParties() {
+        Set<Author> authors = new HashSet<>();
+        authors.add(author);
+        shares.stream().map(SharedList::getAuthor).forEach(authors::add);
+        return authors;
+    }
+    
     @Override
     public int hashCode() {
         return Objects.hash(id);
@@ -119,5 +133,6 @@ public class ShoppingList {
         return "ShoppingList [id=" + id + ", author=" + author + ", createdDate=" + createdDate + ", items=" + items
                 + "]";
     }
-    
+
+
 }

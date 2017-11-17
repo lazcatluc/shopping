@@ -5,9 +5,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Collections;
-
 import javax.jms.ConnectionFactory;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -24,7 +22,6 @@ import org.springframework.jms.support.converter.MappingJackson2MessageConverter
 import org.springframework.jms.support.converter.MessageType;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.client.RestTemplate;
-
 import ro.contezi.shopping.facebook.FacebookMessageProcessor;
 import ro.contezi.shopping.facebook.FacebookWebhookSignatureValidator;
 import ro.contezi.shopping.facebook.SignatureValidator;
@@ -41,6 +38,7 @@ import ro.contezi.shopping.reply.AcceptShare;
 import ro.contezi.shopping.reply.CompositeQuickReplyProvider;
 import ro.contezi.shopping.reply.CompositeReplyProvider;
 import ro.contezi.shopping.reply.FacebookReplySender;
+import ro.contezi.shopping.reply.InformOthers;
 import ro.contezi.shopping.reply.NewShoppingList;
 import ro.contezi.shopping.reply.QuickReplyProvider;
 import ro.contezi.shopping.reply.RejectShare;
@@ -133,9 +131,9 @@ public class Shopping {
     @Bean
     public ReplyProvider replyProvider() throws URISyntaxException {
         return new CompositeReplyProvider(rose(), authorRepository(), Arrays.asList(
-                new ShoppingListAdd(shoppingListRepository(), shoppingListView(), latestList()),
-                new ShoppingListRemove(shoppingListRepository(), shoppingListView(), latestList()),
-                new ShoppingListBuy(shoppingListRepository(), shoppingListView(), latestList()),
+                new ShoppingListAdd(shoppingListRepository(), shoppingListView(), latestList(), informOthers()),
+                new ShoppingListRemove(shoppingListRepository(), shoppingListView(), latestList(), informOthers()),
+                new ShoppingListBuy(shoppingListRepository(), shoppingListView(), latestList(), informOthers()),
                 new ShoppingListReplyProvider(shoppingListView(), latestList()),
                 new ShareList(latestList(), authorRepository(), replySender()),
                 new AcceptShare(shoppingListRepository(), authorRepository(), shoppingListView()),
@@ -167,6 +165,11 @@ public class Shopping {
     @Bean
     public FacebookMessageProcessor facebookMessageProcessor() throws URISyntaxException {
         return new FacebookMessageProcessor(replyProvider(), replySender(), quickReplyProvider());
+    }
+
+    @Bean
+    public InformOthers informOthers() {
+        return new InformOthers(replySender());
     }
 
     @Bean

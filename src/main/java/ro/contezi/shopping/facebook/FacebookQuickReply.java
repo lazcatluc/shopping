@@ -1,17 +1,21 @@
 package ro.contezi.shopping.facebook;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class FacebookQuickReply {
     private final String title;
     private final String imageURL;
     private final FacebookQuickReplyType type;
     private final String payload;
-    
+
     @JsonCreator
-    public FacebookQuickReply(@JsonProperty("title") String title, @JsonProperty("image_url") String imageURL, 
-            @JsonProperty("content_type")FacebookQuickReplyType type, @JsonProperty("payload") String payload) {
+    public FacebookQuickReply(@JsonProperty("title") String title, @JsonProperty("image_url") String imageURL,
+                              @JsonProperty("content_type") FacebookQuickReplyType type, @JsonProperty("payload") String payload) {
         this.title = title;
         this.imageURL = imageURL;
         this.type = type;
@@ -22,10 +26,12 @@ public class FacebookQuickReply {
         return title;
     }
 
+    @JsonProperty("image_url")
     public String getImageURL() {
         return imageURL;
     }
 
+    @JsonProperty("content_type")
     public FacebookQuickReplyType getType() {
         return type;
     }
@@ -33,23 +39,23 @@ public class FacebookQuickReply {
     public String getPayload() {
         return payload;
     }
-    
+
     public static class Builder {
         private String title = "Yes";
         private String imageURL = "";
         private FacebookQuickReplyType type = FacebookQuickReplyType.TEXT;
         private String payload = "Yes";
-        
+
         public Builder withTitle(String title) {
             this.title = title;
             return this;
         }
-        
+
         public Builder withPayload(String payload) {
             this.payload = payload;
             return this;
         }
-        
+
         public FacebookQuickReply build() {
             return new FacebookQuickReply(title, imageURL, type, payload);
         }
@@ -60,5 +66,5 @@ public class FacebookQuickReply {
         return "FacebookQuickReply [title=" + title + ", imageURL=" + imageURL + ", type=" + type + ", payload="
                 + payload + "]";
     }
-    
+
 }

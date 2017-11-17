@@ -2,7 +2,7 @@ package ro.contezi.shopping.reply;
 
 import java.util.Arrays;
 import java.util.List;
-
+import org.apache.log4j.Logger;
 import ro.contezi.shopping.facebook.FacebookMessage;
 import ro.contezi.shopping.facebook.FacebookQuickReply;
 import ro.contezi.shopping.facebook.FacebookReply;
@@ -14,7 +14,8 @@ import ro.contezi.shopping.list.LatestList;
 import ro.contezi.shopping.list.ShoppingList;
 
 public class ShareList implements ConditionalReplyProvider {
-    
+
+    private static final Logger LOGGER = Logger.getLogger(ShareList.class);
     private static final String SHARE_WITH = "share with ";
 
     private final LatestList latestList;
@@ -46,20 +47,21 @@ public class ShareList implements ConditionalReplyProvider {
         if (potentialAuthors.size() > 1) {
             return "I have many by that name";
         }
-        if (shoppingList.getShares().contains(potentialAuthors.get(0))) {
+        if (shoppingList.isSharedWith(potentialAuthors.get(0))) {
             return "You are already sharing with them!";
         }
         FacebookReply replyToShare = new FacebookReply(new FacebookUser(potentialAuthors.get(0).getId()), 
                 new FacebookMessage(shoppingList.getAuthor().getFirstName()+" "+shoppingList.getAuthor().getLastName() + " would like to share the shopping list with you!", 
                         Arrays.asList(new FacebookQuickReply.Builder().withTitle("OK").withPayload("accept_share "+shoppingList.getId()).build(),
                                       new FacebookQuickReply.Builder().withTitle("No, thanks").withPayload("reject_share "+shoppingList.getId()).build()
-                                  )));
+                        ), null));
         replySender.send(replyToShare);
         return "Ok, I've asked " + name + " if they want to share!";
     }
 
     @Override
     public boolean applies(MessageFromFacebook messageFromFacebook) {
+        LOGGER.info(messageFromFacebook.getText().getText());
         return messageFromFacebook.getText().getText().toLowerCase().startsWith(SHARE_WITH);
     }
 
