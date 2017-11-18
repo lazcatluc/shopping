@@ -1,6 +1,7 @@
 package ro.contezi.shopping;
 
-import org.apache.log4j.Logger;
+import static org.slf4j.LoggerFactory.getLogger;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -9,11 +10,11 @@ import ro.contezi.shopping.reply.ReplySender;
 @Configuration
 @Import(Shopping.class)
 public class ShoppingTestConfig {
-    private static final Logger LOGGER = Logger.getLogger(Shopping.class);
+    private static final org.slf4j.Logger LOGGER = getLogger(ShoppingTestConfig.class);
     
     @Bean
     public ReplySender replySender() {
-        return LOGGER::info;
+        return str -> LOGGER.info("{}", str);
     }
 
     static String mesageFromUser(String message, String facebookPageUserId) {

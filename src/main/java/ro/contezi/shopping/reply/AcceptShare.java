@@ -31,7 +31,6 @@ public class AcceptShare implements ConditionalReplyProvider {
 
     @Override
     public boolean applies(MessageFromFacebook messageFromFacebook) {
-        LOGGER.info("Quick reply: " + messageFromFacebook.getText().getQuickReply());
         return messageFromFacebook.getText().getQuickReply() != null &&
                 messageFromFacebook.getText().getQuickReply().getPayload().startsWith("accept_share ");
     }

@@ -61,7 +61,6 @@ public class ShareList implements ConditionalReplyProvider {
 
     @Override
     public boolean applies(MessageFromFacebook messageFromFacebook) {
-        LOGGER.info(messageFromFacebook.getText().getText());
         return messageFromFacebook.getText().getText().toLowerCase().startsWith(SHARE_WITH);
     }
 

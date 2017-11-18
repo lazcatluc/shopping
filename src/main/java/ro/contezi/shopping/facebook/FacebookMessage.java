@@ -14,7 +14,9 @@ public class FacebookMessage {
     private final FacebookQuickReply quickReply;
 
     @JsonCreator
-    public FacebookMessage(@JsonProperty("text") String text, @JsonProperty("quick_replies") List<FacebookQuickReply> quickReplies, @JsonProperty("quick_reply") FacebookQuickReply quickReply) {
+    public FacebookMessage(@JsonProperty("text") String text,
+                           @JsonProperty("quick_replies") List<FacebookQuickReply> quickReplies,
+                           @JsonProperty("quick_reply") FacebookQuickReply quickReply) {
         this.text = text;
         this.quickReplies = quickReplies;
         this.quickReply = quickReply;
@@ -36,7 +38,8 @@ public class FacebookMessage {
 
     @Override
     public String toString() {
-        return "FacebookMessage [text=" + text + ", quickReplies=" + quickReplies + ", quickReply=" + quickReply + "]";
+        return "FacebookMessage [text=" + text + ", quickReplies=" + quickReplies +
+                ", quickReply=" + quickReply + "]";
     }
 
 }

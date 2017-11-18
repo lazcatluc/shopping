@@ -1,20 +1,31 @@
 package ro.contezi.shopping;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.slf4j.LoggerFactory.getLogger;
 
+import java.util.ArrayList;
+import java.util.List;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
+import ro.contezi.shopping.facebook.FacebookReply;
 import ro.contezi.shopping.facebook.Webhook;
 import ro.contezi.shopping.list.LatestList;
 import ro.contezi.shopping.list.ShoppingList;
+import ro.contezi.shopping.reply.ReplySender;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = ShoppingTestConfig.class)
+@SpringBootTest(classes = ShareListTest.ShareListTestConfiguration.class)
 public class ShareListTest {
+    private static final Logger LOGGER = getLogger(ShareListTest.class);
 
     private final String user = "1464923436924425";
     private final String anotherUser = "1513421495405103";
@@ -25,11 +36,35 @@ public class ShareListTest {
     @Autowired
     private LatestList latestList;
 
+    @Autowired
+    private List<FacebookReply> replies;
+
+    @After
+    public void after() {
+        LOGGER.info("{}", replies);
+    }
+
     @Before
     public void sayHi() throws Exception {
         buildMessage("Hi", user);
         buildMessage("Hi", anotherUser);
         buildMessage("new", user);
+    }
+
+    @Configuration
+    @Import(Shopping.class)
+    static class ShareListTestConfiguration {
+        private List<FacebookReply> replies = new ArrayList<>();
+
+        @Bean
+        public ReplySender replySender() {
+            return replies::add;
+        }
+
+        @Bean
+        public List<FacebookReply> replies() {
+            return replies;
+        }
     }
     
     @Test
