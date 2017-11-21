@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class FacebookMessaging {
+public class FacebookMessaging implements TargetedMessage {
     private final FacebookUser sender;
     private final FacebookUser recipient;
     private final long timestamp;
@@ -19,10 +19,12 @@ public class FacebookMessaging {
         this.message = message;
     }
 
+    @Override
     public FacebookUser getSender() {
         return sender;
     }
 
+    @Override
     public FacebookUser getRecipient() {
         return recipient;
     }
@@ -31,6 +33,7 @@ public class FacebookMessaging {
         return timestamp;
     }
 
+    @Override
     public FacebookMessage getMessage() {
         return message;
     }

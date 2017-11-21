@@ -6,6 +6,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Collections;
 import javax.jms.ConnectionFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -24,6 +25,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.client.RestTemplate;
 import ro.contezi.shopping.facebook.FacebookMessageProcessor;
 import ro.contezi.shopping.facebook.FacebookWebhookSignatureValidator;
+import ro.contezi.shopping.facebook.MessageLogger;
 import ro.contezi.shopping.facebook.SignatureValidator;
 import ro.contezi.shopping.facebook.Webhook;
 import ro.contezi.shopping.list.AuthorJpaRepository;
@@ -57,7 +59,8 @@ import ro.contezi.shopping.reply.ShoppingListReplyProvider;
 @EnableAsync
 @EntityScan
 public class Shopping {
-    
+    private static final Logger LOGGER = Logger.getLogger(Shopping.class);
+
     @Value("${facebook.secret}")
     private String facebookSecret;
     @Value("${facebook.graph.api.host}")
@@ -161,10 +164,16 @@ public class Shopping {
     public ReplySender replySender() {
         return new FacebookReplySender(restTemplate(), facebookToken, graphApiUrl);
     }
+
+    @Bean
+    public MessageLogger messageLogger() {
+        return LOGGER::info;
+    }
     
     @Bean
     public FacebookMessageProcessor facebookMessageProcessor() throws URISyntaxException {
-        return new FacebookMessageProcessor(replyProvider(), replySender(), quickReplyProvider());
+        return new FacebookMessageProcessor(replyProvider(), replySender(),
+                quickReplyProvider(), messageLogger());
     }
 
     @Bean

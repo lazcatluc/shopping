@@ -8,6 +8,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FacebookUser {
+    public static final FacebookUser PAGE_USER = new FacebookUser("");
     private final String id;
 
     @JsonCreator

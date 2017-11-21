@@ -2,12 +2,14 @@ package ro.contezi.shopping;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
+import ro.contezi.shopping.facebook.TargetedMessage;
 import ro.contezi.shopping.facebook.Webhook;
 import ro.contezi.shopping.list.LatestList;
 import ro.contezi.shopping.list.ShoppingList;
@@ -21,8 +23,16 @@ public class ShoppingTest {
     
     @Autowired
     private LatestList latestList;
+
+    @Autowired
+    private List<TargetedMessage> messages;
     
     private final String facebookPageUserId = "1513421495405103";
+
+    @After
+    public void after() {
+        messages.clear();
+    }
 
     @Test
     public void getsLatestList() throws Exception {

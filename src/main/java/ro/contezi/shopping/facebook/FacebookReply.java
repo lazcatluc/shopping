@@ -1,6 +1,6 @@
 package ro.contezi.shopping.facebook;
 
-public class FacebookReply {
+public class FacebookReply implements TargetedMessage {
     private final FacebookUser recipient;
     private final FacebookMessage message;
 
@@ -9,10 +9,12 @@ public class FacebookReply {
         this.message = message;
     }
 
+    @Override
     public FacebookUser getRecipient() {
         return recipient;
     }
 
+    @Override
     public FacebookMessage getMessage() {
         return message;
     }

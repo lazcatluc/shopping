@@ -1,20 +1,35 @@
 package ro.contezi.shopping;
 
-import static org.slf4j.LoggerFactory.getLogger;
-
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import ro.contezi.shopping.facebook.MessageLogger;
+import ro.contezi.shopping.facebook.TargetedMessage;
 import ro.contezi.shopping.reply.ReplySender;
 
 @Configuration
 @Import(Shopping.class)
 public class ShoppingTestConfig {
-    private static final org.slf4j.Logger LOGGER = getLogger(ShoppingTestConfig.class);
-    
+
+    private List<TargetedMessage> messages = new ArrayList<>();
+
     @Bean
     public ReplySender replySender() {
-        return str -> LOGGER.info("{}", str);
+        return messages::add;
+    }
+
+    @Bean
+    public List<TargetedMessage> messages() {
+        return messages;
+    }
+
+    @Bean
+    public MessageLogger messageLogger() {
+        return messageFromFacebook ->
+                messageFromFacebook.getEntry().forEach(facebookEntry ->
+                        facebookEntry.getMessaging().forEach(messages::add));
     }
 
     static String mesageFromUser(String message, String facebookPageUserId) {
