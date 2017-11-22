@@ -13,6 +13,7 @@ import ro.contezi.shopping.facebook.TargetedMessage;
 import ro.contezi.shopping.facebook.Webhook;
 import ro.contezi.shopping.list.LatestList;
 import ro.contezi.shopping.list.ShoppingList;
+import ro.contezi.shopping.reply.ShoppingListAction;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ShoppingTestConfig.class)
@@ -59,6 +60,30 @@ public class ShoppingTest {
         buildMessage("new");
         myList = latestList.get(facebookPageUserId);
         assertThat(myList.toString()).doesNotContain("cheese");
+    }
+
+    @Test
+    public void addsCommaSeparatedItems() throws Exception {
+        buildMessage("new");
+        buildMessage("add cheese, apples, bread");
+
+        ShoppingList myList = latestList.get(facebookPageUserId);
+        assertThat(myList.toString()).contains("cheese=false").contains("apples=false").contains("bread=false");
+    }
+
+    @Test
+    public void normalizesUnicode() throws Exception {
+        assertThat(ShoppingListAction.removeUnicode("ăîȘâțș"))
+                .isEqualTo("aiSats");
+    }
+
+    @Test
+    public void handlesUnicode() throws Exception {
+        buildMessage("new");
+        buildMessage("add ăîȘâțș");
+
+        ShoppingList myList = latestList.get(facebookPageUserId);
+        assertThat(myList.toString()).contains("aiSats=false");
     }
 
     private void buildMessage(String message) throws Exception {

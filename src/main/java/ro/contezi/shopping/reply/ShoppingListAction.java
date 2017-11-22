@@ -1,5 +1,8 @@
 package ro.contezi.shopping.reply;
 
+import java.text.Normalizer;
+import java.util.Arrays;
+import java.util.List;
 import ro.contezi.shopping.facebook.MessageFromFacebook;
 import ro.contezi.shopping.list.LatestList;
 import ro.contezi.shopping.list.ShoppingList;
@@ -23,11 +26,19 @@ public abstract class ShoppingListAction implements ConditionalReplyProvider {
     public String reply(MessageFromFacebook messageFromFacebook) {
         ShoppingList shoppingList = latestList.get(messageFromFacebook.getSender().getId());
         String shoppingListId = shoppingList.getId();
-        String item = messageFromFacebook.getText().getText().substring(actionDescription().length()).trim();
-        executeAction(shoppingListId, item);
+        Arrays.stream(messageFromFacebook.getText().getText()
+                .substring(actionDescription().length()).trim().split(","))
+                .map(ShoppingListAction::removeUnicode)
+                .map(String::trim)
+                .forEach(item -> executeAction(shoppingListId, item));
         String message = shoppingListView.displayShoppingList(getShoppingListRepository().get(shoppingListId));
         informOthers.informOthers(messageFromFacebook.getSender(), shoppingList, message);
         return message;
+    }
+
+    public static String removeUnicode(String source) {
+        return Normalizer.normalize(source, Normalizer.Form.NFD)
+                .replaceAll("[^\\x00-\\x7F]", "");
     }
 
     protected abstract void executeAction(String shoppingListId, String item);
