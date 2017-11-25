@@ -6,6 +6,6 @@ import ro.contezi.shopping.facebook.FacebookQuickReply;
 import ro.contezi.shopping.facebook.MessageFromFacebook;
 
 public interface ConditionalQuickReplyProvider {
-    boolean applies(MessageFromFacebook messageFromFacebook);
+    boolean appliesQuickReply(MessageFromFacebook messageFromFacebook);
     List<FacebookQuickReply> quickReplies(MessageFromFacebook messageFromFacebook);
 }

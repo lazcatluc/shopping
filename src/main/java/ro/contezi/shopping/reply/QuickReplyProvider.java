@@ -6,5 +6,5 @@ import ro.contezi.shopping.facebook.FacebookQuickReply;
 import ro.contezi.shopping.facebook.MessageFromFacebook;
 
 public interface QuickReplyProvider {
-    List<FacebookQuickReply> reply(MessageFromFacebook messageFromFacebook);
+    List<FacebookQuickReply> quickReply(MessageFromFacebook messageFromFacebook);
 }

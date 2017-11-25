@@ -15,8 +15,8 @@ public class CompositeQuickReplyProvider implements QuickReplyProvider {
     }
 
     @Override
-    public List<FacebookQuickReply> reply(MessageFromFacebook message) {
-        return conditionalReplies.stream().filter(replyProvider -> replyProvider.applies(message))
+    public List<FacebookQuickReply> quickReply(MessageFromFacebook message) {
+        return conditionalReplies.stream().filter(replyProvider -> replyProvider.appliesQuickReply(message))
                 .findFirst().map(replyProvider -> replyProvider.quickReplies(message))
                 .orElse(Collections.emptyList());
     }

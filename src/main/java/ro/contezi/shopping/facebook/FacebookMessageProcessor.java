@@ -28,7 +28,7 @@ public class FacebookMessageProcessor {
         }
         messageLogger.logMessage(messageFromFacebook);
         String reply = replyProvider.reply(messageFromFacebook);
-        List<FacebookQuickReply> quickReplies = quickReplyProvider.reply(messageFromFacebook);
+        List<FacebookQuickReply> quickReplies = quickReplyProvider.quickReply(messageFromFacebook);
         FacebookMessage message = new FacebookMessage(reply,
                 quickReplies.isEmpty() ? null : quickReplies, null);
         FacebookUser sender = messageFromFacebook.getSender();

@@ -22,7 +22,7 @@ hs_err_pid*
 *.iws
 
 out
-
+run.bat
 pids.out
 
 */target

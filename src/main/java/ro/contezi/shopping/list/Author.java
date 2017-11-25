@@ -36,7 +36,7 @@ public class Author {
     @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
     @OrderBy("createdDate DESC")
     private Set<ShoppingList> myLists;
-    @ManyToMany(mappedBy = "author", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
     @OrderBy("shareDate DESC")
     private Set<SharedList> listSharedWithMe;
     

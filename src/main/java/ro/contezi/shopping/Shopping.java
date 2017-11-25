@@ -37,6 +37,7 @@ import ro.contezi.shopping.list.ShoppingListMessengerView;
 import ro.contezi.shopping.list.ShoppingListRepository;
 import ro.contezi.shopping.list.ShoppingListView;
 import ro.contezi.shopping.reply.AcceptShare;
+import ro.contezi.shopping.reply.BuyPartialMatches;
 import ro.contezi.shopping.reply.CompositeQuickReplyProvider;
 import ro.contezi.shopping.reply.CompositeReplyProvider;
 import ro.contezi.shopping.reply.FacebookReplySender;
@@ -134,22 +135,30 @@ public class Shopping {
     @Bean
     public ReplyProvider replyProvider() throws URISyntaxException {
         return new CompositeReplyProvider(rose(), authorRepository(), Arrays.asList(
-                new ShoppingListAdd(shoppingListRepository(), shoppingListView(), latestList(), informOthers()),
-                new ShoppingListRemove(shoppingListRepository(), shoppingListView(), latestList(), informOthers()),
-                new ShoppingListBuy(shoppingListRepository(), shoppingListView(), latestList(), informOthers()),
-                new ShoppingListReplyProvider(shoppingListView(), latestList()),
-                new ShareList(latestList(), authorRepository(), replySender()),
-                new AcceptShare(shoppingListRepository(), authorRepository(), shoppingListView()),
-                new RejectShare(),
-                new NewShoppingList(shoppingListRepository(), shoppingListView(), authorRepository())
-            ));
+            new ShoppingListAdd(shoppingListRepository(), shoppingListView(), latestList(), informOthers()),
+            new ShoppingListRemove(shoppingListRepository(), shoppingListView(), latestList(), informOthers()),
+            new ShoppingListBuy(shoppingListRepository(), shoppingListView(), latestList(), informOthers()),
+            buyPartialMatches(),
+            new ShoppingListReplyProvider(shoppingListView(), latestList()),
+            new ShareList(latestList(), authorRepository(), replySender()),
+            new AcceptShare(shoppingListRepository(), authorRepository(), shoppingListView()),
+            new RejectShare(),
+            new NewShoppingList(shoppingListRepository(), shoppingListView(), authorRepository())
+        ));
     }
     
     @Bean
     public QuickReplyProvider quickReplyProvider() {
-        return new CompositeQuickReplyProvider(Collections.emptyList());
-    }    
-    
+        return new CompositeQuickReplyProvider(Collections.singletonList(
+                buyPartialMatches()
+        ));
+    }
+
+    @Bean
+    public BuyPartialMatches buyPartialMatches() {
+        return new BuyPartialMatches(shoppingListRepository(), shoppingListView(), latestList(), informOthers());
+    }
+
     @Bean
     public ShoppingListView shoppingListView() {
         return new ShoppingListMessengerView();
