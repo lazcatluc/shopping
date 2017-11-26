@@ -10,6 +10,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import ro.contezi.shopping.facebook.MessageFromFacebook;
 import ro.contezi.shopping.author.AuthorRepository;
+import ro.contezi.shopping.reply.text.CompositeReplier;
+import ro.contezi.shopping.reply.text.ConditionalReplier;
 
 public class CompositeReplierTest {
     

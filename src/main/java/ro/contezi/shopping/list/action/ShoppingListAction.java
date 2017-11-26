@@ -1,4 +1,4 @@
-package ro.contezi.shopping.reply;
+package ro.contezi.shopping.list.action;
 
 import java.text.Normalizer;
 import java.util.Arrays;
@@ -10,6 +10,7 @@ import ro.contezi.shopping.list.LatestList;
 import ro.contezi.shopping.list.ShoppingList;
 import ro.contezi.shopping.list.ShoppingListRepository;
 import ro.contezi.shopping.list.ShoppingListView;
+import ro.contezi.shopping.reply.text.ConditionalReplier;
 
 public abstract class ShoppingListAction implements ConditionalReplier {
     private final ShoppingListRepository shoppingListRepository;

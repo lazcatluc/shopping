@@ -1,8 +1,9 @@
-package ro.contezi.shopping.reply;
+package ro.contezi.shopping.list.action;
 
 import ro.contezi.shopping.facebook.MessageFromFacebook;
 import ro.contezi.shopping.list.LatestList;
 import ro.contezi.shopping.list.ShoppingListView;
+import ro.contezi.shopping.reply.text.ConditionalReplier;
 
 public class ShoppingListReplier implements ConditionalReplier {
 

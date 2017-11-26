@@ -1,10 +1,11 @@
-package ro.contezi.shopping.reply;
+package ro.contezi.shopping.list.action;
 
 import ro.contezi.shopping.facebook.FacebookMessage;
 import ro.contezi.shopping.facebook.FacebookReply;
 import ro.contezi.shopping.facebook.FacebookUser;
 import ro.contezi.shopping.author.Author;
 import ro.contezi.shopping.list.ShoppingList;
+import ro.contezi.shopping.reply.ReplySender;
 
 public class InformOthers {
     private final ReplySender replySender;

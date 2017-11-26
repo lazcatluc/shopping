@@ -1,4 +1,4 @@
-package ro.contezi.shopping.reply;
+package ro.contezi.shopping.reply.quick;
 
 import java.util.Collections;
 import java.util.List;

@@ -1,4 +1,4 @@
-package ro.contezi.shopping.reply;
+package ro.contezi.shopping.reply.text;
 
 import ro.contezi.shopping.facebook.MessageFromFacebook;
 

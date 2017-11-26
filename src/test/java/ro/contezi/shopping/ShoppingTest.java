@@ -17,7 +17,7 @@ import ro.contezi.shopping.facebook.TargetedMessage;
 import ro.contezi.shopping.facebook.Webhook;
 import ro.contezi.shopping.list.LatestList;
 import ro.contezi.shopping.list.ShoppingList;
-import ro.contezi.shopping.reply.ShoppingListAction;
+import ro.contezi.shopping.list.action.ShoppingListAction;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ShoppingTestConfig.class)

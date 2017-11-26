@@ -1,4 +1,4 @@
-package ro.contezi.shopping.reply;
+package ro.contezi.shopping.list.action;
 
 import java.util.HashSet;
 import java.util.List;
@@ -11,6 +11,7 @@ import ro.contezi.shopping.list.ShoppingList;
 import ro.contezi.shopping.list.ShoppingListItem;
 import ro.contezi.shopping.list.ShoppingListRepository;
 import ro.contezi.shopping.list.ShoppingListView;
+import ro.contezi.shopping.reply.quick.ConditionalQuickReplier;
 
 public class BuyPartialMatches extends ShoppingListBuy implements ConditionalQuickReplier {
     public BuyPartialMatches(ShoppingListRepository shoppingListRepository, ShoppingListView shoppingListView,

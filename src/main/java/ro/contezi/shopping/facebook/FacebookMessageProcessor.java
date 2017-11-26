@@ -2,8 +2,8 @@ package ro.contezi.shopping.facebook;
 
 import java.util.List;
 import org.springframework.jms.annotation.JmsListener;
-import ro.contezi.shopping.reply.QuickReplier;
-import ro.contezi.shopping.reply.Replier;
+import ro.contezi.shopping.reply.quick.QuickReplier;
+import ro.contezi.shopping.reply.text.Replier;
 import ro.contezi.shopping.reply.ReplySender;
 
 public class FacebookMessageProcessor {

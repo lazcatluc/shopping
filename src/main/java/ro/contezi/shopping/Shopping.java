@@ -36,23 +36,23 @@ import ro.contezi.shopping.list.ShoppingListJpaRepository;
 import ro.contezi.shopping.list.ShoppingListMessengerView;
 import ro.contezi.shopping.list.ShoppingListRepository;
 import ro.contezi.shopping.list.ShoppingListView;
-import ro.contezi.shopping.reply.AcceptShare;
-import ro.contezi.shopping.reply.BuyPartialMatches;
-import ro.contezi.shopping.reply.CompositeQuickReplier;
-import ro.contezi.shopping.reply.CompositeReplier;
+import ro.contezi.shopping.list.action.AcceptShare;
+import ro.contezi.shopping.list.action.BuyPartialMatches;
+import ro.contezi.shopping.reply.quick.CompositeQuickReplier;
+import ro.contezi.shopping.reply.text.CompositeReplier;
 import ro.contezi.shopping.reply.FacebookReplySender;
-import ro.contezi.shopping.reply.InformOthers;
-import ro.contezi.shopping.reply.NewShoppingList;
-import ro.contezi.shopping.reply.QuickReplier;
-import ro.contezi.shopping.reply.RejectShare;
-import ro.contezi.shopping.reply.Replier;
+import ro.contezi.shopping.list.action.InformOthers;
+import ro.contezi.shopping.list.action.NewShoppingList;
+import ro.contezi.shopping.reply.quick.QuickReplier;
+import ro.contezi.shopping.list.action.RejectShare;
+import ro.contezi.shopping.reply.text.Replier;
 import ro.contezi.shopping.reply.ReplySender;
-import ro.contezi.shopping.reply.Rose;
-import ro.contezi.shopping.reply.ShareList;
-import ro.contezi.shopping.reply.ShoppingListAdd;
-import ro.contezi.shopping.reply.ShoppingListBuy;
-import ro.contezi.shopping.reply.ShoppingListRemove;
-import ro.contezi.shopping.reply.ShoppingListReplier;
+import ro.contezi.shopping.reply.text.Rose;
+import ro.contezi.shopping.list.action.ShareList;
+import ro.contezi.shopping.list.action.ShoppingListAdd;
+import ro.contezi.shopping.list.action.ShoppingListBuy;
+import ro.contezi.shopping.list.action.ShoppingListRemove;
+import ro.contezi.shopping.list.action.ShoppingListReplier;
 
 @SpringBootApplication
 @EnableJms
