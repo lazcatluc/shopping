@@ -52,7 +52,7 @@ import ro.contezi.shopping.list.action.ShareList;
 import ro.contezi.shopping.list.action.ShoppingListAdd;
 import ro.contezi.shopping.list.action.ShoppingListBuy;
 import ro.contezi.shopping.list.action.ShoppingListRemove;
-import ro.contezi.shopping.list.action.ShoppingListReplier;
+import ro.contezi.shopping.reply.text.ShoppingListReplier;
 
 @SpringBootApplication
 @EnableJms
