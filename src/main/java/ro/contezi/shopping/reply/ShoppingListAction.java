@@ -2,7 +2,6 @@ package ro.contezi.shopping.reply;
 
 import java.text.Normalizer;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 import ro.contezi.shopping.facebook.FacebookMessage;
 import ro.contezi.shopping.facebook.FacebookQuickReply;
@@ -12,7 +11,7 @@ import ro.contezi.shopping.list.ShoppingList;
 import ro.contezi.shopping.list.ShoppingListRepository;
 import ro.contezi.shopping.list.ShoppingListView;
 
-public abstract class ShoppingListAction implements ConditionalReplyProvider {
+public abstract class ShoppingListAction implements ConditionalReplier {
     private final ShoppingListRepository shoppingListRepository;
     private final ShoppingListView shoppingListView;
     private final LatestList latestList;

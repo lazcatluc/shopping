@@ -28,9 +28,9 @@ import ro.contezi.shopping.facebook.FacebookWebhookSignatureValidator;
 import ro.contezi.shopping.facebook.MessageLogger;
 import ro.contezi.shopping.facebook.SignatureValidator;
 import ro.contezi.shopping.facebook.Webhook;
-import ro.contezi.shopping.list.AuthorJpaRepository;
-import ro.contezi.shopping.list.AuthorRepository;
-import ro.contezi.shopping.list.GraphApi;
+import ro.contezi.shopping.author.AuthorJpaRepository;
+import ro.contezi.shopping.author.AuthorRepository;
+import ro.contezi.shopping.author.GraphApi;
 import ro.contezi.shopping.list.LatestList;
 import ro.contezi.shopping.list.ShoppingListJpaRepository;
 import ro.contezi.shopping.list.ShoppingListMessengerView;
@@ -38,21 +38,21 @@ import ro.contezi.shopping.list.ShoppingListRepository;
 import ro.contezi.shopping.list.ShoppingListView;
 import ro.contezi.shopping.reply.AcceptShare;
 import ro.contezi.shopping.reply.BuyPartialMatches;
-import ro.contezi.shopping.reply.CompositeQuickReplyProvider;
-import ro.contezi.shopping.reply.CompositeReplyProvider;
+import ro.contezi.shopping.reply.CompositeQuickReplier;
+import ro.contezi.shopping.reply.CompositeReplier;
 import ro.contezi.shopping.reply.FacebookReplySender;
 import ro.contezi.shopping.reply.InformOthers;
 import ro.contezi.shopping.reply.NewShoppingList;
-import ro.contezi.shopping.reply.QuickReplyProvider;
+import ro.contezi.shopping.reply.QuickReplier;
 import ro.contezi.shopping.reply.RejectShare;
-import ro.contezi.shopping.reply.ReplyProvider;
+import ro.contezi.shopping.reply.Replier;
 import ro.contezi.shopping.reply.ReplySender;
 import ro.contezi.shopping.reply.Rose;
 import ro.contezi.shopping.reply.ShareList;
 import ro.contezi.shopping.reply.ShoppingListAdd;
 import ro.contezi.shopping.reply.ShoppingListBuy;
 import ro.contezi.shopping.reply.ShoppingListRemove;
-import ro.contezi.shopping.reply.ShoppingListReplyProvider;
+import ro.contezi.shopping.reply.ShoppingListReplier;
 
 @SpringBootApplication
 @EnableJms
@@ -113,7 +113,7 @@ public class Shopping {
     }
     
     @Bean
-    public ReplyProvider rose() throws URISyntaxException {
+    public Replier rose() throws URISyntaxException {
         return new Rose(roseUrl, restTemplate());
     }
     
@@ -133,13 +133,13 @@ public class Shopping {
     }
     
     @Bean
-    public ReplyProvider replyProvider() throws URISyntaxException {
-        return new CompositeReplyProvider(rose(), authorRepository(), Arrays.asList(
+    public Replier replyProvider() throws URISyntaxException {
+        return new CompositeReplier(rose(), authorRepository(), Arrays.asList(
             new ShoppingListAdd(shoppingListRepository(), shoppingListView(), latestList(), informOthers()),
             new ShoppingListRemove(shoppingListRepository(), shoppingListView(), latestList(), informOthers()),
             new ShoppingListBuy(shoppingListRepository(), shoppingListView(), latestList(), informOthers()),
             buyPartialMatches(),
-            new ShoppingListReplyProvider(shoppingListView(), latestList()),
+            new ShoppingListReplier(shoppingListView(), latestList()),
             new ShareList(latestList(), authorRepository(), replySender()),
             new AcceptShare(shoppingListRepository(), authorRepository(), shoppingListView()),
             new RejectShare(),
@@ -148,8 +148,8 @@ public class Shopping {
     }
     
     @Bean
-    public QuickReplyProvider quickReplyProvider() {
-        return new CompositeQuickReplyProvider(Collections.singletonList(
+    public QuickReplier quickReplyProvider() {
+        return new CompositeQuickReplier(Collections.singletonList(
                 buyPartialMatches()
         ));
     }

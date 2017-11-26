@@ -16,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
+import ro.contezi.shopping.author.Author;
 
 @Entity
 public class ShoppingList {

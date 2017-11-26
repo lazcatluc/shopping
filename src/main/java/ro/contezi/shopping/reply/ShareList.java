@@ -8,12 +8,12 @@ import ro.contezi.shopping.facebook.FacebookQuickReply;
 import ro.contezi.shopping.facebook.FacebookReply;
 import ro.contezi.shopping.facebook.FacebookUser;
 import ro.contezi.shopping.facebook.MessageFromFacebook;
-import ro.contezi.shopping.list.Author;
-import ro.contezi.shopping.list.AuthorRepository;
+import ro.contezi.shopping.author.Author;
+import ro.contezi.shopping.author.AuthorRepository;
 import ro.contezi.shopping.list.LatestList;
 import ro.contezi.shopping.list.ShoppingList;
 
-public class ShareList implements ConditionalReplyProvider {
+public class ShareList implements ConditionalReplier {
 
     private static final Logger LOGGER = Logger.getLogger(ShareList.class);
     private static final String SHARE_WITH = "share with ";

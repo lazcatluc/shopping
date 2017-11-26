@@ -4,6 +4,8 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import ro.contezi.shopping.author.Author;
+import ro.contezi.shopping.author.AuthorRepository;
 
 public class LatestList {
     private final ShoppingListRepository shoppingListRepository;

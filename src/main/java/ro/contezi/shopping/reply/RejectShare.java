@@ -2,7 +2,7 @@ package ro.contezi.shopping.reply;
 
 import ro.contezi.shopping.facebook.MessageFromFacebook;
 
-public class RejectShare implements ConditionalReplyProvider {
+public class RejectShare implements ConditionalReplier {
 
     @Override
     public String reply(MessageFromFacebook messageFromFacebook) {

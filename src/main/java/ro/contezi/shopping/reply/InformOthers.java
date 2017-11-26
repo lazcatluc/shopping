@@ -3,7 +3,7 @@ package ro.contezi.shopping.reply;
 import ro.contezi.shopping.facebook.FacebookMessage;
 import ro.contezi.shopping.facebook.FacebookReply;
 import ro.contezi.shopping.facebook.FacebookUser;
-import ro.contezi.shopping.list.Author;
+import ro.contezi.shopping.author.Author;
 import ro.contezi.shopping.list.ShoppingList;
 
 public class InformOthers {

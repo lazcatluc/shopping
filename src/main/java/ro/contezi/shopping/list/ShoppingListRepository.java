@@ -1,6 +1,7 @@
 package ro.contezi.shopping.list;
 
 import java.util.Set;
+import ro.contezi.shopping.author.Author;
 
 public interface ShoppingListRepository {
     void add(String shoppingListId, String item);

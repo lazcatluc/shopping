@@ -1,12 +1,12 @@
 package ro.contezi.shopping.reply;
 
 import ro.contezi.shopping.facebook.MessageFromFacebook;
-import ro.contezi.shopping.list.AuthorRepository;
+import ro.contezi.shopping.author.AuthorRepository;
 import ro.contezi.shopping.list.ShoppingList;
 import ro.contezi.shopping.list.ShoppingListRepository;
 import ro.contezi.shopping.list.ShoppingListView;
 
-public class AcceptShare implements ConditionalReplyProvider {
+public class AcceptShare implements ConditionalReplier {
 
     private final ShoppingListRepository shoppingListRepository;
     private final AuthorRepository authorRepository;

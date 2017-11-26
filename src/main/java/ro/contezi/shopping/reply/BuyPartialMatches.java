@@ -12,7 +12,7 @@ import ro.contezi.shopping.list.ShoppingListItem;
 import ro.contezi.shopping.list.ShoppingListRepository;
 import ro.contezi.shopping.list.ShoppingListView;
 
-public class BuyPartialMatches extends ShoppingListBuy implements ConditionalQuickReplyProvider {
+public class BuyPartialMatches extends ShoppingListBuy implements ConditionalQuickReplier {
     public BuyPartialMatches(ShoppingListRepository shoppingListRepository, ShoppingListView shoppingListView,
                              LatestList latestList, InformOthers informOthers) {
         super(shoppingListRepository, shoppingListView, latestList, informOthers);

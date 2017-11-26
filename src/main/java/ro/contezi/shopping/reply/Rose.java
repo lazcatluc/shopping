@@ -12,7 +12,7 @@ import org.springframework.web.client.RestTemplate;
 
 import ro.contezi.shopping.facebook.MessageFromFacebook;
 
-public class Rose implements ReplyProvider {
+public class Rose implements Replier {
     
     private final HttpHeaders headers;
     private final RestTemplate restTemplate;
@@ -26,7 +26,7 @@ public class Rose implements ReplyProvider {
     }
     
     /* (non-Javadoc)
-     * @see ro.contezi.shopping.ReplyProvider#reply(java.lang.String)
+     * @see ro.contezi.shopping.Replier#reply(java.lang.String)
      */
     @Override
     public String reply(MessageFromFacebook message) {

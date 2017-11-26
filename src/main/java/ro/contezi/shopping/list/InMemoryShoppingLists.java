@@ -3,6 +3,7 @@ package ro.contezi.shopping.list;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import ro.contezi.shopping.author.Author;
 
 public class InMemoryShoppingLists implements ShoppingListRepository {
 

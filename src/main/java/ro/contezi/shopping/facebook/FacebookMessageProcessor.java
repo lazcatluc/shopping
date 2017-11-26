@@ -2,22 +2,22 @@ package ro.contezi.shopping.facebook;
 
 import java.util.List;
 import org.springframework.jms.annotation.JmsListener;
-import ro.contezi.shopping.reply.QuickReplyProvider;
-import ro.contezi.shopping.reply.ReplyProvider;
+import ro.contezi.shopping.reply.QuickReplier;
+import ro.contezi.shopping.reply.Replier;
 import ro.contezi.shopping.reply.ReplySender;
 
 public class FacebookMessageProcessor {
 
-    private final ReplyProvider replyProvider;
+    private final Replier replier;
     private final ReplySender replySender;
-    private final QuickReplyProvider quickReplyProvider;
+    private final QuickReplier quickReplier;
     private final MessageLogger messageLogger;
 
-    public FacebookMessageProcessor(ReplyProvider replyProvider, ReplySender replySender,
-                                    QuickReplyProvider quickReplyProvider, MessageLogger messageLogger) {
-        this.replyProvider = replyProvider;
+    public FacebookMessageProcessor(Replier replier, ReplySender replySender,
+                                    QuickReplier quickReplier, MessageLogger messageLogger) {
+        this.replier = replier;
         this.replySender = replySender;
-        this.quickReplyProvider = quickReplyProvider;
+        this.quickReplier = quickReplier;
         this.messageLogger = messageLogger;
     }
 
@@ -27,8 +27,8 @@ public class FacebookMessageProcessor {
             return;
         }
         messageLogger.logMessage(messageFromFacebook);
-        String reply = replyProvider.reply(messageFromFacebook);
-        List<FacebookQuickReply> quickReplies = quickReplyProvider.quickReply(messageFromFacebook);
+        String reply = replier.reply(messageFromFacebook);
+        List<FacebookQuickReply> quickReplies = quickReplier.quickReply(messageFromFacebook);
         FacebookMessage message = new FacebookMessage(reply,
                 quickReplies.isEmpty() ? null : quickReplies, null);
         FacebookUser sender = messageFromFacebook.getSender();
