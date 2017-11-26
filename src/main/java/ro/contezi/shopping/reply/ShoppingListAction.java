@@ -3,6 +3,8 @@ package ro.contezi.shopping.reply;
 import java.text.Normalizer;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import ro.contezi.shopping.facebook.FacebookMessage;
 import ro.contezi.shopping.facebook.FacebookQuickReply;
 import ro.contezi.shopping.facebook.MessageFromFacebook;
 import ro.contezi.shopping.list.LatestList;
@@ -43,7 +45,8 @@ public abstract class ShoppingListAction implements ConditionalReplyProvider {
         if (quickReply != null) {
             return quickReply.getPayload();
         }
-        return messageFromFacebook.getText().getText();
+        return Optional.ofNullable(messageFromFacebook.getText()).map(FacebookMessage::getText)
+                .orElse("");
     }
 
     public static String removeUnicode(String source) {
@@ -61,7 +64,8 @@ public abstract class ShoppingListAction implements ConditionalReplyProvider {
         if (quickReply != null && quickReply.getPayload().startsWith(actionDescription())) {
             return true;
         }
-        return messageFromFacebook.getText().getText().toLowerCase().startsWith(actionDescription()) &&
+        return Optional.ofNullable(messageFromFacebook.getText()).map(FacebookMessage::getText)
+                .orElse("").toLowerCase().startsWith(actionDescription()) &&
                 appliesToRemainingText(latestList.get(messageFromFacebook.getSender().getId()),
                         getRemainingText(messageFromFacebook));
     }

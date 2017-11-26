@@ -12,7 +12,11 @@ public class ShoppingListMessengerView implements ShoppingListView {
             return "-";
         }
         StringBuilder sb = new StringBuilder();
-        shoppingList.forEach(item -> sb.append("\n").append(item.getItemName()).append(item.getBoughtDate() != null ? check : ""));
+        shoppingList.stream().filter(item -> item.getBoughtDate() != null)
+                .forEach(item -> sb.append("\n").append(item.getItemName()).append(check));
+        shoppingList.stream().filter(item -> item.getBoughtDate() == null)
+                .forEach(item -> sb.append("\n").append(item.getItemName()));
+
         return sb.toString();
     }
 
