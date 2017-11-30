@@ -10,8 +10,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import ro.contezi.shopping.ConfigurableUser;
 import ro.contezi.shopping.ShoppingListTestConfig;
 import ro.contezi.shopping.Users;
 import ro.contezi.shopping.facebook.TargetedMessage;
@@ -35,6 +37,13 @@ public class ShareListTest {
     @Autowired
     private List<TargetedMessage> messages;
 
+    @Autowired
+    private ConfigurableUser defaultUser;
+
+    @Autowired
+    @Qualifier("friend")
+    private ConfigurableUser friend;
+
     @After
     public void after() {
         messages.forEach(message -> LOGGER.info("{}", message));
@@ -43,8 +52,8 @@ public class ShareListTest {
 
     @Before
     public void sayHi() throws Exception {
-        sender = users.user("1464923436924425");
-        receiver = users.user("1513421495405103");
+        sender = users.user(friend.getId());
+        receiver = users.user(defaultUser.getId());
         sender.says("Hi");
         receiver.says("Hi");
         sender.startsANewList();
@@ -52,7 +61,7 @@ public class ShareListTest {
     
     @Test
     public void sharesListBetweenTwoUsersByFirstName() throws Exception {
-        sender.sharesListWith("Catalin");
+        sender.sharesListWith(defaultUser.getFirstName());
         receiver.acceptsSharedList(latestList(sender));
 
         assertThat(latestList(sender).getShares().size()).isEqualTo(1);
@@ -60,7 +69,8 @@ public class ShareListTest {
 
     @Test
     public void sharesListBetweenTwoUsersByFirstNameLastNameNoCaps() throws Exception {
-        sender.sharesListWith("catalin lazar");
+        sender.sharesListWith(defaultUser.getFirstName().toLowerCase() + " " +
+                defaultUser.getLastName().toLowerCase());
         receiver.acceptsSharedList(latestList(sender));
 
         assertThat(latestList(sender).getShares().size()).isEqualTo(1);
@@ -68,7 +78,7 @@ public class ShareListTest {
     
     @Test
     public void canRejectSharedList() throws Exception {
-        sender.sharesListWith("Catalin");
+        sender.sharesListWith(defaultUser.getFirstName());
         receiver.rejectsSharedList(latestList(sender));
 
         assertThat(latestList(sender).getShares()).isEmpty();
@@ -76,7 +86,7 @@ public class ShareListTest {
     
     @Test
     public void sharedListItemsAreSeenByTheNewUser() throws Exception {
-        sender.sharesListWith("Catalin")
+        sender.sharesListWith(defaultUser.getFirstName())
             .adds("cheese");
         receiver.acceptsSharedList(latestList(sender));
 

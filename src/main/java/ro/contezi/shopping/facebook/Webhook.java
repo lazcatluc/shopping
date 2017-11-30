@@ -1,9 +1,10 @@
 package ro.contezi.shopping.facebook;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 import java.io.IOException;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jms.core.JmsTemplate;
@@ -20,7 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RequestMapping("/webhook")
 public class Webhook {
 
-    private static final Logger LOGGER = LogManager.getLogger(Webhook.class);
+    private static final Logger LOGGER = getLogger(Webhook.class);
     private final SignatureValidator signatureValidator;
     private final JmsTemplate jmsTemplate;
     private final String pageId;
@@ -36,6 +37,7 @@ public class Webhook {
     public ResponseEntity<String> test(@RequestParam(value = "hub.mode") String hubMode,
             @RequestParam(value = "hub.verify_token") String hubToken,
             @RequestParam(value = "hub.challenge") String hubChallenge) {
+        LOGGER.info("Received subscription request: {}, {}, {}", hubMode, hubToken, hubChallenge);
         ResponseEntity<String> result;
         if ("subscribe".equals(hubMode) && "verify_me".equals(hubToken)) {
             result = new ResponseEntity<>(hubChallenge, HttpStatus.OK);

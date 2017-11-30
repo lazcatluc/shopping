@@ -5,6 +5,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Map;
 import javax.jms.ConnectionFactory;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.autoconfigure.jms.DefaultJmsListenerContainerFactoryConfigurer;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jms.annotation.EnableJms;
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
@@ -30,7 +32,6 @@ import ro.contezi.shopping.facebook.SignatureValidator;
 import ro.contezi.shopping.facebook.Webhook;
 import ro.contezi.shopping.author.AuthorJpaRepository;
 import ro.contezi.shopping.author.AuthorRepository;
-import ro.contezi.shopping.author.GraphApi;
 import ro.contezi.shopping.list.LatestList;
 import ro.contezi.shopping.list.ShoppingListJpaRepository;
 import ro.contezi.shopping.list.ShoppingListMessengerView;
@@ -76,6 +77,12 @@ public class Shopping {
     private String roseUrl;
     @Value("${facebook.page.id}")
     private String pageId;
+    @Value("${facebook.app.id}")
+    private String appId;
+    @Value("#{${users.default}}")
+    private Map<String, String> user;
+    @Value("#{${users.friend}}")
+    private Map<String, String> friend;
     @Autowired
     private JmsTemplate jmsTemplate;
     @Autowired
@@ -124,7 +131,8 @@ public class Shopping {
     
     @Bean
     public GraphApi graphApi() {
-        return new GraphApi(graphApiHost, graphApiVersion, facebookToken, restTemplate());
+        return new GraphApi(graphApiHost, graphApiVersion, facebookToken, restTemplate(),
+                appId, facebookSecret, pageId);
     }
 
     @Bean
@@ -193,6 +201,17 @@ public class Shopping {
     @Bean
     public Webhook webhook() throws InvalidKeyException, NoSuchAlgorithmException {
         return new Webhook(signatureValidator(), jmsTemplate, pageId);
+    }
+
+    @Bean
+    @Primary
+    public ConfigurableUser defaultUser() {
+        return new ConfigurableUser(user);
+    }
+
+    @Bean
+    public ConfigurableUser friend() {
+        return new ConfigurableUser(friend);
     }
 
     public static void main(String[] args) {

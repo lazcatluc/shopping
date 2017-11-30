@@ -11,10 +11,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import ro.contezi.shopping.facebook.FacebookMessage;
 import ro.contezi.shopping.facebook.TargetedMessage;
+import ro.contezi.shopping.integration.ShoppingIntegration;
 import ro.contezi.shopping.list.LatestList;
 import ro.contezi.shopping.list.ShoppingList;
 import ro.contezi.shopping.list.action.ShoppingListAction;
@@ -33,11 +35,14 @@ public class ShoppingListTest {
     @Autowired
     private List<TargetedMessage> messages;
 
+    @Autowired
+    private ConfigurableUser defaultUser;
+
     private Users.Action user;
 
     @Before
     public void setUp() throws Exception {
-        user = users.user("1513421495405103");
+        user = users.user(defaultUser.getId());
         user.startsANewList();
     }
 
@@ -50,7 +55,7 @@ public class ShoppingListTest {
     public void getsLatestList() throws Exception {
         ShoppingList myList = latestList();
         
-        assertThat(myList.getAuthor().getFirstName()).isEqualTo("Catalin");
+        assertThat(myList.getAuthor().getFirstName()).isEqualTo(defaultUser.getFirstName());
     }
 
     protected ShoppingList latestList() {
