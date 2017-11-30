@@ -28,4 +28,12 @@ public class ConfigurableUser {
     public String getLastName() {
         return lastName;
     }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
 }
