@@ -3,6 +3,8 @@ package ro.contezi.shopping.integration;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class ShoppingListSpec extends SeleniumFixture {
 
     @Override
@@ -15,7 +17,7 @@ public class ShoppingListSpec extends SeleniumFixture {
     public void addsToList() throws InterruptedException {
         typeMessageAndAwaitResponse("add cheese");
 
-        Assertions.assertThat(lastMessage()).isEqualTo("cheese");
+        assertThat(lastMessage()).isEqualTo("cheese");
     }
 
     @Test
@@ -24,7 +26,7 @@ public class ShoppingListSpec extends SeleniumFixture {
         typeMessageAndAwaitResponse("add bread");
         typeMessageAndAwaitResponse("add apples");
 
-        Assertions.assertThat(lastMessage()).contains("cheese", "apples", "bread");
+        assertThat(lastMessage()).contains("cheese", "apples", "bread");
     }
 
     @Test
@@ -32,7 +34,7 @@ public class ShoppingListSpec extends SeleniumFixture {
         typeMessageAndAwaitResponse("add cheese");
         typeMessageAndAwaitResponse("buy cheese");
 
-        Assertions.assertThat(lastMessage()).isEqualTo("cheese ✔");
+        assertThat(lastMessage()).isEqualTo("cheese ✔");
     }
 
 }
