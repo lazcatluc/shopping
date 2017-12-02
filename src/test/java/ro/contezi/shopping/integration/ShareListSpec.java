@@ -12,29 +12,23 @@ public class ShareListSpec extends SeleniumFixture {
     @Qualifier("friend")
     private ConfigurableUser friend;
 
-    private SeleniumFixture friendBrowser;
-
     @Override
     public void setUp() throws InterruptedException {
         super.setUp();
-        friendBrowser = new SeleniumFixture(this, friend);
-        friendBrowser.setUp();
         typeMessageAndAwaitResponse("new");
-    }
-
-    @Override
-    public void tearDown() {
-        super.tearDown();
-        friendBrowser.tearDown();
+        switchToUser(friend);
+        typeMessageAndAwaitResponse("hi");
+        switchToUser();
     }
 
     @Test
     public void sharesListBetweenTwoUsersByFirstName() throws InterruptedException {
         typeMessageAndAwaitResponse("share with " + friend.getFirstName());
-        friendBrowser.clickOnQuickReplyAndAwaitResponse("OK");
         typeMessageAndAwaitResponse("add cheese");
+        switchToUser(friend);
+        clickOnQuickReplyAndAwaitResponse("OK");
 
-        assertThat(friendBrowser.lastMessage()).isEqualTo("cheese");
+        assertThat(lastMessage()).isEqualTo("cheese");
     }
 
 }

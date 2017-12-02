@@ -43,19 +43,6 @@ public class SeleniumFixture {
     @Autowired
     private Ngrok ngrok;
 
-    public SeleniumFixture() {
-    }
-
-    protected SeleniumFixture(SeleniumFixture parent, ConfigurableUser user) {
-        this.webDriver = new ChromeDriver(new ChromeDriverService.Builder()
-                .usingAnyFreePort().build());
-        this.baseUrl = parent.baseUrl;
-        this.user = user;
-        this.graphApi = parent.graphApi;
-        this.ngrok = parent.ngrok;
-    }
-
-
     @Before
     public void setUp() throws InterruptedException {
         if (!INITIALIZED_WEBHOOK.getAndSet(true)) {
@@ -68,6 +55,17 @@ public class SeleniumFixture {
     @After
     public void tearDown() {
         webDriver.quit();
+    }
+
+    protected void switchToUser(ConfigurableUser friend) {
+        webDriver.quit();
+        webDriver = new ChromeDriver();
+        webDriver.get(baseUrl);
+        login(friend);
+    }
+
+    protected void switchToUser() {
+        switchToUser(user);
     }
 
     protected WebElement findElement(By by, int secondsToWait) {
@@ -86,6 +84,10 @@ public class SeleniumFixture {
         actions.click();
         actions.sendKeys(message, Keys.RETURN);
         actions.build().perform();
+        awaitResponse(message);
+    }
+
+    protected void awaitResponse(String message) throws InterruptedException {
         long millisToWait = TimeUnit.MILLISECONDS.convert(SECONDS_TO_WAIT, TimeUnit.SECONDS);
         long millisStep = 100;
         do {
@@ -127,6 +129,9 @@ public class SeleniumFixture {
         return allMessages.get(allMessages.size() - 1);
     }
 
-    protected void clickOnQuickReplyAndAwaitResponse(String ok) {
+    protected void clickOnQuickReplyAndAwaitResponse(String text) throws InterruptedException {
+        findElement(By.xpath("//div[@role='button']/div[contains(text(), '" + text + "')]"))
+            .click();
+        awaitResponse(text);
     }
 }

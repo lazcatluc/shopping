@@ -41,8 +41,7 @@ public class ShoppingIntegration {
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public WebDriver webDriver() {
         System.setProperty("webdriver.chrome.driver", chromeDriverPath);
-        return new ChromeDriver(new ChromeDriverService.Builder()
-                .usingAnyFreePort().build());
+        return new ChromeDriver();
     }
 
     @Bean
