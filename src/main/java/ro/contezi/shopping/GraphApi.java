@@ -4,12 +4,16 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 import java.net.URI;
 import org.slf4j.Logger;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import ro.contezi.shopping.author.AppAccessToken;
 import ro.contezi.shopping.author.Author;
 
 public class GraphApi {
+    private static final Logger LOGGER = getLogger(GraphApi.class);
+
     private final String graphApiUrl;
     private final String graphApiVersion;
     private final String pageAccessToken;
@@ -49,7 +53,13 @@ public class GraphApi {
                 .queryParam("fields", "messages,messaging_postbacks,messaging_postbacks,messaging_optins")
                 .queryParam("verify_token", "verify_me")
                 .queryParam("access_token", appAccessToken.getAccessToken()).build().toUri();
-        restTemplate.postForLocation(uri, "");
+        LOGGER.info("Changing webhook: {}", uri);
+        try {
+            restTemplate.postForLocation(uri, "");
+        }
+        catch (RestClientException re) {
+            throw re;
+        }
     }
 
     protected UriComponentsBuilder graphiApiUri(String... pathsSegments) {

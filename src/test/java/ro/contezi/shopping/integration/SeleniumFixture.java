@@ -1,11 +1,5 @@
 package ro.contezi.shopping.integration;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-import org.assertj.core.api.AbstractCharSequenceAssert;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -25,11 +19,17 @@ import ro.contezi.shopping.ConfigurableUser;
 import ro.contezi.shopping.GraphApi;
 import ro.contezi.shopping.list.action.ShoppingListAction;
 
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ShoppingIntegration.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @ActiveProfiles("itest")
 public class SeleniumFixture {
-    public static final int SECONDS_TO_WAIT = 30;
+    private static final int SECONDS_TO_WAIT = 300;
+    private static final AtomicBoolean INITIALIZED_WEBHOOK = new AtomicBoolean(false);
     @Autowired
     private WebDriver webDriver;
     @Value("${facebook.messenger.url}")
@@ -40,10 +40,14 @@ public class SeleniumFixture {
     private GraphApi graphApi;
     @Autowired
     private Ngrok ngrok;
+    @Value("${application.live.url}")
+    private String alwaysUpUrl;
 
     @Before
     public void setUp() throws InterruptedException {
-        graphApi.registerWebhook(ngrok.getUrl() + "/webhook");
+        if (!INITIALIZED_WEBHOOK.getAndSet(true)) {
+            graphApi.registerWebhook(ngrok.getUrl() + "/webhook");
+        }
         webDriver.get(baseUrl);
         login(user);
     }
@@ -82,8 +86,10 @@ public class SeleniumFixture {
     }
 
     protected List<String> getAllMessages() {
-        return Arrays.asList(findElement(By.cssSelector("[aria-label='Messages']"))
-                .getText().split("\n"));
+        return findElement(By.cssSelector("[aria-label='Messages']"))
+                .findElements(By.cssSelector("div[body]"))
+                .stream().map(e -> e.getAttribute("body"))
+                .collect(Collectors.toList());
     }
 
     protected void login(ConfigurableUser user) {
@@ -99,6 +105,7 @@ public class SeleniumFixture {
         }
         return "";
     }
+
     protected String lastMessage() {
         List<String> allMessages = getAllMessages();
         if (allMessages.isEmpty()) {
