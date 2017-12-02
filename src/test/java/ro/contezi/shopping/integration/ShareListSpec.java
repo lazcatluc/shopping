@@ -31,4 +31,24 @@ public class ShareListSpec extends SeleniumFixture {
         assertThat(lastMessage()).isEqualTo("cheese");
     }
 
+    @Test
+    public void sharesListBetweenTwoUsersByFirstNameLastNameNoCaps() throws InterruptedException {
+        typeMessageAndAwaitResponse("share with " + friend.getFirstName().toLowerCase() + " " +
+                friend.getLastName().toLowerCase());
+        typeMessageAndAwaitResponse("add cheese");
+        switchToUser(friend);
+        clickOnQuickReplyAndAwaitResponse("OK");
+
+        assertThat(lastMessage()).isEqualTo("cheese");
+    }
+
+    @Test
+    public void canRejectSharedList() throws InterruptedException {
+        typeMessageAndAwaitResponse("share with " + friend.getFirstName() + " " + friend.getLastName());
+        typeMessageAndAwaitResponse("add cheese");
+        switchToUser(friend);
+        clickOnQuickReplyAndAwaitResponse("No, thanks");
+
+        assertThat(lastMessage()).isNotEqualTo("cheese");
+    }
 }

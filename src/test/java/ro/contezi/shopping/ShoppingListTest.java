@@ -39,7 +39,7 @@ public class ShoppingListTest {
     private Users.Action user;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         user = users.user(defaultUser.getId());
         user.startsANewList();
     }
@@ -50,7 +50,7 @@ public class ShoppingListTest {
     }
 
     @Test
-    public void getsLatestList() throws Exception {
+    public void getsLatestList() {
         ShoppingList myList = latestList();
         
         assertThat(myList.getAuthor().getFirstName()).isEqualTo(defaultUser.getFirstName());
@@ -61,7 +61,7 @@ public class ShoppingListTest {
     }
 
     @Test
-    public void processesListsBasedOnUserActions() throws Exception {
+    public void processesListsBasedOnUserActions() {
         user.says("hello!")
             .displaysCurrentList()
             .adds("cheese")
@@ -84,7 +84,7 @@ public class ShoppingListTest {
     }
 
     @Test
-    public void addsCommaSeparatedItems() throws Exception {
+    public void addsCommaSeparatedItems() {
         user.adds("cheese, apples, bread");
 
         assertLatestList()
@@ -94,13 +94,13 @@ public class ShoppingListTest {
     }
 
     @Test
-    public void normalizesUnicode() throws Exception {
+    public void normalizesUnicode() {
         assertThat(ShoppingListAction.removeUnicode("ăîȘâțș"))
                 .isEqualTo("aiSats");
     }
 
     @Test
-    public void handlesUnicode() throws Exception {
+    public void handlesUnicode() {
         user.startsANewList();
         user.adds("ăîȘâțș");
 
@@ -108,7 +108,7 @@ public class ShoppingListTest {
     }
 
     @Test
-    public void sendsQuickReplyWhenPartialMatch() throws Exception {
+    public void sendsQuickReplyWhenPartialMatch() {
         user.startsANewList()
             .adds("hrana umeda")
             .adds("hrana uscata")
