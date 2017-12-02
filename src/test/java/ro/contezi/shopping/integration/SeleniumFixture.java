@@ -62,7 +62,7 @@ public class SeleniumFixture {
         return findElement(by, SECONDS_TO_WAIT);
     }
 
-    protected void typeMessage(String message) throws InterruptedException {
+    protected void typeMessageAndAwaitResponse(String message) throws InterruptedException {
         WebElement messageArea = findElement(By.cssSelector("[aria-label='New message']"));
         Actions actions = new Actions(webDriver);
         actions.moveToElement(messageArea);

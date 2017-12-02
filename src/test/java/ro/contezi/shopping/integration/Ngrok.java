@@ -15,8 +15,8 @@ public class Ngrok {
     private final Process ngrok;
     private final String url;
 
-    public Ngrok(int serverPort) throws IOException {
-        ngrok = new ProcessBuilder("ngrok", "http", "-bind-tls=true",
+    public Ngrok(int serverPort, String ngrokExecutable) throws IOException {
+        ngrok = new ProcessBuilder(ngrokExecutable, "http", "-bind-tls=true",
                 String.valueOf(serverPort)).start();
         try {
             Thread.sleep(3000);

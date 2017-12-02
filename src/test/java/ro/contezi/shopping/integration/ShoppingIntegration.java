@@ -21,6 +21,8 @@ import ro.contezi.shopping.reply.ReplySender;
 public class ShoppingIntegration {
     @Value("${server.port}")
     private int serverPort;
+    @Value("${ngrok.executable:ngrok}")
+    private String ngrokExecutable;
     @Value("${chrome.driver.path:chromedriver.exe}")
     private String chromeDriverPath;
     @Value("${facebook.graph.api.url}")
@@ -31,7 +33,7 @@ public class ShoppingIntegration {
     @Bean
     @Profile("itest")
     public Ngrok ngrok() throws IOException {
-        return new Ngrok(serverPort);
+        return new Ngrok(serverPort, ngrokExecutable);
     }
 
     @Bean(destroyMethod = "close")

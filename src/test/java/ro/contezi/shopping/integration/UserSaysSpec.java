@@ -8,14 +8,14 @@ public class UserSaysSpec extends SeleniumFixture {
 
     @Test
     public void hello() throws InterruptedException {
-        typeMessage("Hello");
+        typeMessageAndAwaitResponse("Hello");
 
         assertThat(penultimateMessage()).isEqualTo("Hello");
     }
 
     @Test
     public void newList() throws InterruptedException {
-        typeMessage("new");
+        typeMessageAndAwaitResponse("new");
 
         assertThat(lastMessage()).isEqualTo("-");
     }
