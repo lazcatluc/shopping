@@ -51,7 +51,7 @@ public class ShareListTest {
     }
 
     @Before
-    public void sayHi() throws Exception {
+    public void sayHi() {
         sender = users.user(friend.getId());
         receiver = users.user(defaultUser.getId());
         sender.says("Hi");
@@ -60,7 +60,7 @@ public class ShareListTest {
     }
     
     @Test
-    public void sharesListBetweenTwoUsersByFirstName() throws Exception {
+    public void sharesListBetweenTwoUsersByFirstName() {
         sender.sharesListWith(defaultUser.getFirstName());
         receiver.acceptsSharedList(latestList(sender));
 
@@ -68,7 +68,7 @@ public class ShareListTest {
     }
 
     @Test
-    public void sharesListBetweenTwoUsersByFirstNameLastNameNoCaps() throws Exception {
+    public void sharesListBetweenTwoUsersByFirstNameLastNameNoCaps() {
         sender.sharesListWith(defaultUser.getFirstName().toLowerCase() + " " +
                 defaultUser.getLastName().toLowerCase());
         receiver.acceptsSharedList(latestList(sender));
@@ -77,7 +77,7 @@ public class ShareListTest {
     }
     
     @Test
-    public void canRejectSharedList() throws Exception {
+    public void canRejectSharedList() {
         sender.sharesListWith(defaultUser.getFirstName());
         receiver.rejectsSharedList(latestList(sender));
 
@@ -85,7 +85,7 @@ public class ShareListTest {
     }
     
     @Test
-    public void sharedListItemsAreSeenByTheNewUser() throws Exception {
+    public void sharedListItemsAreSeenByTheNewUser() {
         sender.sharesListWith(defaultUser.getFirstName())
             .adds("cheese");
         receiver.acceptsSharedList(latestList(sender));

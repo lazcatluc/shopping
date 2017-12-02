@@ -7,6 +7,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -40,8 +42,19 @@ public class SeleniumFixture {
     private GraphApi graphApi;
     @Autowired
     private Ngrok ngrok;
-    @Value("${application.live.url}")
-    private String alwaysUpUrl;
+
+    public SeleniumFixture() {
+    }
+
+    protected SeleniumFixture(SeleniumFixture parent, ConfigurableUser user) {
+        this.webDriver = new ChromeDriver(new ChromeDriverService.Builder()
+                .usingAnyFreePort().build());
+        this.baseUrl = parent.baseUrl;
+        this.user = user;
+        this.graphApi = parent.graphApi;
+        this.ngrok = parent.ngrok;
+    }
+
 
     @Before
     public void setUp() throws InterruptedException {
@@ -112,5 +125,8 @@ public class SeleniumFixture {
             return "";
         }
         return allMessages.get(allMessages.size() - 1);
+    }
+
+    protected void clickOnQuickReplyAndAwaitResponse(String ok) {
     }
 }
