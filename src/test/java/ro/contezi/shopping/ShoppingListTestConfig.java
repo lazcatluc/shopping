@@ -2,6 +2,8 @@ package ro.contezi.shopping;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -15,6 +17,9 @@ import ro.contezi.shopping.reply.ReplySender;
 public class ShoppingListTestConfig {
 
     private List<TargetedMessage> messages = new ArrayList<>();
+
+    @Value("${sleepAfterSendMessage:1000}")
+    private int sleepAfterSendMessage;
 
     @Bean
     public ReplySender replySender() {
@@ -35,7 +40,7 @@ public class ShoppingListTestConfig {
 
     @Bean
     public Users whenUserActions(Webhook webhook) {
-        return new Users(webhook);
+        return new Users(webhook, sleepAfterSendMessage);
     }
 
 }

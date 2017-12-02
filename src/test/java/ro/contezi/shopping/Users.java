@@ -7,14 +7,15 @@ import ro.contezi.shopping.list.ShoppingList;
 
 public class Users {
     private final Webhook webhook;
+    private final int sleepAfterSendMessage;
 
-    public Users(Webhook webhook) {
+    public Users(Webhook webhook, int sleepAfterSendMessage) {
         this.webhook = webhook;
+        this.sleepAfterSendMessage = sleepAfterSendMessage;
     }
 
     public class Action {
         private final String user;
-        private final int sleepAfterSendMessage = 1000;
 
         private Action(String user) {
             this.user = user;
