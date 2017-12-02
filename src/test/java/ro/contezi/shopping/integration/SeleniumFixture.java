@@ -43,6 +43,18 @@ public class SeleniumFixture {
     @Autowired
     private Ngrok ngrok;
 
+    public SeleniumFixture() {
+
+    }
+
+    public SeleniumFixture(SeleniumFixture parent, ConfigurableUser friend) {
+        this.webDriver = new ChromeDriver();
+        this.baseUrl = parent.baseUrl;
+        this.user = friend;
+        this.graphApi = parent.graphApi;
+        this.ngrok = parent.ngrok;
+    }
+
     @Before
     public void setUp() throws InterruptedException {
         if (!INITIALIZED_WEBHOOK.getAndSet(true)) {
@@ -53,19 +65,9 @@ public class SeleniumFixture {
     }
 
     @After
-    public void tearDown() {
+    public void tearDown() throws InterruptedException {
+        Thread.sleep(5000);
         webDriver.quit();
-    }
-
-    protected void switchToUser(ConfigurableUser friend) {
-        webDriver.quit();
-        webDriver = new ChromeDriver();
-        webDriver.get(baseUrl);
-        login(friend);
-    }
-
-    protected void switchToUser() {
-        switchToUser(user);
     }
 
     protected WebElement findElement(By by, int secondsToWait) {

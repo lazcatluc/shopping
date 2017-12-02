@@ -1,5 +1,6 @@
 package ro.contezi.shopping.integration;
 
+import org.junit.After;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -12,23 +13,30 @@ public class ShareListSpec extends SeleniumFixture {
     @Qualifier("friend")
     private ConfigurableUser friend;
 
+    private SeleniumFixture friendBrowser;
+
     @Override
     public void setUp() throws InterruptedException {
         super.setUp();
         typeMessageAndAwaitResponse("new");
-        switchToUser(friend);
-        typeMessageAndAwaitResponse("hi");
-        switchToUser();
+        friendBrowser = new SeleniumFixture(this, friend);
+        friendBrowser.setUp();
+        friendBrowser.typeMessageAndAwaitResponse("hi");
+    }
+
+    @Override
+    public void tearDown() throws InterruptedException {
+        super.tearDown();
+        friendBrowser.tearDown();
     }
 
     @Test
     public void sharesListBetweenTwoUsersByFirstName() throws InterruptedException {
         typeMessageAndAwaitResponse("share with " + friend.getFirstName());
         typeMessageAndAwaitResponse("add cheese");
-        switchToUser(friend);
-        clickOnQuickReplyAndAwaitResponse("OK");
+        friendBrowser.clickOnQuickReplyAndAwaitResponse("OK");
 
-        assertThat(lastMessage()).isEqualTo("cheese");
+        assertThat(friendBrowser.lastMessage()).isEqualTo("cheese");
     }
 
     @Test
@@ -36,19 +44,17 @@ public class ShareListSpec extends SeleniumFixture {
         typeMessageAndAwaitResponse("share with " + friend.getFirstName().toLowerCase() + " " +
                 friend.getLastName().toLowerCase());
         typeMessageAndAwaitResponse("add cheese");
-        switchToUser(friend);
-        clickOnQuickReplyAndAwaitResponse("OK");
+        friendBrowser.clickOnQuickReplyAndAwaitResponse("OK");
 
-        assertThat(lastMessage()).isEqualTo("cheese");
+        assertThat(friendBrowser.lastMessage()).isEqualTo("cheese");
     }
 
     @Test
     public void canRejectSharedList() throws InterruptedException {
         typeMessageAndAwaitResponse("share with " + friend.getFirstName() + " " + friend.getLastName());
         typeMessageAndAwaitResponse("add cheese");
-        switchToUser(friend);
-        clickOnQuickReplyAndAwaitResponse("No, thanks");
+        friendBrowser.clickOnQuickReplyAndAwaitResponse("No, thanks");
 
-        assertThat(lastMessage()).isNotEqualTo("cheese");
+        assertThat(friendBrowser.lastMessage()).isNotEqualTo("cheese");
     }
 }
