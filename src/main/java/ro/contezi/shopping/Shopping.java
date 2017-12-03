@@ -149,7 +149,7 @@ public class Shopping {
             buyPartialMatches(),
             new ShoppingListReplier(shoppingListView(), latestList()),
             new ShareList(latestList(), authorRepository(), replySender()),
-            new AcceptShare(shoppingListRepository(), authorRepository(), shoppingListView()),
+            new AcceptShare(shoppingListRepository(), authorRepository(), shoppingListView(), replySender()),
             new RejectShare(),
             new NewShoppingList(shoppingListRepository(), shoppingListView(), authorRepository())
         ));
