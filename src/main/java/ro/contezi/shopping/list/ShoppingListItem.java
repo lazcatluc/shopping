@@ -1,5 +1,7 @@
 package ro.contezi.shopping.list;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -38,6 +40,7 @@ public class ShoppingListItem {
         this.itemName = itemName;
     }
 
+    @JsonIgnore
     public ShoppingList getShoppingList() {
         return shoppingList;
     }

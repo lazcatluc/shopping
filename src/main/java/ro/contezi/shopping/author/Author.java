@@ -9,6 +9,8 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import ro.contezi.shopping.list.SharedList;
@@ -40,11 +42,13 @@ public class Author {
     @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
     @OrderBy("shareDate DESC")
     private Set<SharedList> listSharedWithMe;
-    
+
+    @JsonIgnore
     public Set<ShoppingList> getMyLists() {
         return Collections.unmodifiableSet(myLists);
     }
 
+    @JsonIgnore
     public Set<SharedList> getListSharedWithMe() {
         return Collections.unmodifiableSet(listSharedWithMe);
     }

@@ -8,6 +8,8 @@ import java.util.Collections;
 import java.util.Map;
 import javax.jms.ConnectionFactory;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -226,7 +228,7 @@ public class Shopping {
 
     @Bean
     public ShoppingListController shoppingListController() {
-        return new ShoppingListController(latestList());
+        return new ShoppingListController(latestList(), authorJpaRepository);
     }
 
     public static void main(String[] args) {

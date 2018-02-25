@@ -16,6 +16,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import ro.contezi.shopping.author.Author;
 
 @Entity
@@ -103,6 +105,7 @@ public class ShoppingList {
         this.createdDate = createdDate;
     }
 
+    @JsonIgnore
     public Set<SharedList> getShares() {
         return shares;
     }

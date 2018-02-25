@@ -146,4 +146,8 @@ public class SeleniumFixture {
             .click();
         awaitResponse(text);
     }
+
+    protected ConfigurableUser getUser() {
+        return user;
+    }
 }
