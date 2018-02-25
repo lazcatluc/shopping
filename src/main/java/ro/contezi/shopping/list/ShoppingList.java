@@ -113,7 +113,9 @@ public class ShoppingList {
 
     public Set<Author> getAllInterestedParties() {
         Set<Author> authors = new HashSet<>();
-        authors.add(author);
+        if (author != null) {
+            authors.add(author);
+        }
         shares.stream().map(SharedList::getAuthor).forEach(authors::add);
         return authors;
     }
