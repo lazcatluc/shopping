@@ -225,11 +225,6 @@ public class Shopping {
     }
 
     @Bean
-    public ShoppingItemController shoppingItemController() {
-        return new ShoppingItemController(shoppingListAdd(), shoppingListBuy(), shoppingListRemove());
-    }
-
-    @Bean
     public ShoppingListController shoppingListController() {
         return new ShoppingListController(latestList());
     }

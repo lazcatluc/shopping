@@ -3,10 +3,13 @@ package ro.contezi.shopping;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.*;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.socket.WebSocketHttpHeaders;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
@@ -14,7 +17,8 @@ import org.springframework.web.socket.messaging.WebSocketStompClient;
 import org.springframework.web.socket.sockjs.client.SockJsClient;
 import org.springframework.web.socket.sockjs.client.Transport;
 import org.springframework.web.socket.sockjs.client.WebSocketTransport;
-import ro.contezi.shopping.ShoppingListTestConfig;
+import ro.contezi.shopping.list.ShoppingList;
+import ro.contezi.shopping.list.ShoppingListRepository;
 import ro.contezi.shopping.list.action.item.ShoppingItem;
 
 import java.lang.reflect.Type;
@@ -29,12 +33,16 @@ import static org.junit.Assert.fail;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ShoppingListTestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@ActiveProfiles("itest")
 public class WebSocketConfigSpec {
 
     @Value("${server.port}")
     private int port;
     private WebSocketStompClient stompClient;
     private final WebSocketHttpHeaders headers = new WebSocketHttpHeaders();
+    @Autowired
+    @Qualifier("shoppingListRepository")
+    private ShoppingListRepository shoppingListRepository;
 
     @Before
     public void setup() {
@@ -46,7 +54,8 @@ public class WebSocketConfigSpec {
 
     @Test
     public void getGreeting() throws Exception {
-
+        ShoppingList shoppingList = new ShoppingList();
+        shoppingListRepository.saveShoppingList(shoppingList);
         final CountDownLatch latch = new CountDownLatch(1);
         final AtomicReference<RuntimeException> failure = new AtomicReference<>();
 
@@ -54,7 +63,7 @@ public class WebSocketConfigSpec {
 
             @Override
             public void afterConnected(final StompSession session, StompHeaders connectedHeaders) {
-                session.subscribe("/topic/items", new StompFrameHandler() {
+                session.subscribe("/topic/items/" + shoppingList.getId(), new StompFrameHandler() {
                     @Override
                     public Type getPayloadType(StompHeaders headers) {
                         return ShoppingItem.class;
@@ -74,7 +83,7 @@ public class WebSocketConfigSpec {
                     }
                 });
                 try {
-                    session.send("/ws/item", new ShoppingItem("1", "hello", "1", false, false));
+                    session.send("/ws/item", new ShoppingItem("1", shoppingList.getId(), "hello", false, false));
                 } catch (RuntimeException t) {
                     failure.set(t);
                     latch.countDown();

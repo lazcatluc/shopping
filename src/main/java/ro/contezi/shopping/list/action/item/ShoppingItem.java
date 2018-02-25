@@ -63,6 +63,7 @@ public class ShoppingItem {
                 ", shoppingListId='" + shoppingListId + '\'' +
                 ", itemName='" + itemName + '\'' +
                 ", bought=" + bought +
+                ", removed=" + removed +
                 '}';
     }
 }

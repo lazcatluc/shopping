@@ -1,10 +1,13 @@
 package ro.contezi.shopping.list.action.item;
 
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.stereotype.Controller;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
+@Controller
 public class ShoppingItemController {
     private static final Logger LOGGER = getLogger(ShoppingItemController.class);
 
@@ -12,6 +15,7 @@ public class ShoppingItemController {
     private final ShoppingListBuy shoppingListBuy;
     private final ShoppingListRemove shoppingListRemove;
 
+    @Autowired
     public ShoppingItemController(ShoppingListAdd shoppingListAdd,
                                   ShoppingListBuy shoppingListBuy,
                                   ShoppingListRemove shoppingListRemove) {
@@ -21,17 +25,18 @@ public class ShoppingItemController {
     }
 
     @MessageMapping("/item")
-    public void receive(ShoppingItem shoppingItem) {
+    public ShoppingItem receive(ShoppingItem shoppingItem) {
         LOGGER.info("Received item {} ", shoppingItem);
         if (shoppingItem.isRemoved()) {
             shoppingListRemove.buildReplies(shoppingItem.getShoppingListId(), shoppingItem);
-            return;
+            return shoppingItem;
         }
         if (shoppingItem.isBought()) {
             shoppingListBuy.buildReplies(shoppingItem.getShoppingListId(), shoppingItem);
-            return;
+            return shoppingItem;
         }
         shoppingListAdd.buildReplies(shoppingItem.getShoppingListId(), shoppingItem);
+        return shoppingItem;
     }
 
 }

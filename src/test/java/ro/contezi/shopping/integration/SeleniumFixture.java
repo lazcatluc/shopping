@@ -3,14 +3,12 @@ package ro.contezi.shopping.integration;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,10 +23,14 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ShoppingIntegration.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @ActiveProfiles("itest")
 public class SeleniumFixture {
+    private static final Logger LOGGER = getLogger(SeleniumFixture.class);
+
     private static final int SECONDS_TO_WAIT = 300;
     private static final AtomicBoolean INITIALIZED_WEBHOOK = new AtomicBoolean(false);
     @Autowired
@@ -101,11 +103,20 @@ public class SeleniumFixture {
         while (!penultimateMessage().equals(ShoppingListAction.removeUnicode(message)));
     }
 
-    protected List<String> getAllMessages() {
-        return findElement(By.cssSelector("[aria-label='Messages']"))
-                .findElements(By.cssSelector("div[body]"))
-                .stream().map(e -> e.getAttribute("body"))
-                .collect(Collectors.toList());
+    private List<String> getAllMessages() {
+        IllegalStateException ise = new IllegalStateException();
+        for (int i = 0; i < 5; i++) {
+            try {
+                return findElement(By.cssSelector("[aria-label='Messages']"))
+                        .findElements(By.cssSelector("div[body]"))
+                        .stream().map(e -> e.getAttribute("body"))
+                        .collect(Collectors.toList());
+            } catch (StaleElementReferenceException sere) {
+                LOGGER.error(sere.getMessage(), sere);
+                ise.addSuppressed(sere);
+            }
+        }
+        throw ise;
     }
 
     protected void login(ConfigurableUser user) {
