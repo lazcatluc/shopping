@@ -1,6 +1,5 @@
 package ro.contezi.shopping.integration;
 
-import org.junit.After;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -14,6 +13,7 @@ public class ShareListSpec extends SeleniumFixture {
     private ConfigurableUser friend;
 
     private SeleniumFixture friendBrowser;
+
 
     @Override
     public void setUp() throws InterruptedException {

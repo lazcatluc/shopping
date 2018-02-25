@@ -9,16 +9,20 @@ import ro.contezi.shopping.author.Author;
 @Repository
 @Transactional
 public interface ShoppingListJpaRepository extends JpaRepository<ShoppingList, String>, ShoppingListRepository {
-    default void add(String shoppingListId, String item) {
-        findOne(shoppingListId).addItem(item);
+    default ShoppingList find(String shoppingListId) {
+        return findOne(shoppingListId);
+    }
+
+    default ShoppingListItem add(String shoppingListId, String item) {
+        return findOne(shoppingListId).addItem(item);
     }
     
-    default void remove(String shoppingListId, String item) {
-        findOne(shoppingListId).removeItem(item);
+    default ShoppingListItem remove(String shoppingListId, String item) {
+        return findOne(shoppingListId).removeItem(item);
     }
     
-    default void buy(String shoppingListId, String item) {
-        findOne(shoppingListId).buyItem(item);
+    default ShoppingListItem buy(String shoppingListId, String item) {
+        return findOne(shoppingListId).buyItem(item);
     }
     
     default Set<ShoppingListItem> get(String shoppingListId) {

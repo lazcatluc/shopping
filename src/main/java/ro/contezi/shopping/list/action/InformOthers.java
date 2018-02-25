@@ -12,8 +12,8 @@ public class InformOthers {
         this.replySender = replySender;
     }
 
-    public void informOthers(FacebookUser sender, ShoppingList shoppingList, String message) {
-        shoppingList.getAllInterestedParties().stream().filter(party -> !sender.getId().equals(party.getId()))
+    public void informOthers(String senderId, ShoppingList shoppingList, String message) {
+        shoppingList.getAllInterestedParties().stream().filter(party -> !senderId.equals(party.getId()))
                 .map(Author::getId).forEach(user -> replySender.send(user, message));
     }
 }

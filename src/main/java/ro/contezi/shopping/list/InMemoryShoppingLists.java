@@ -10,8 +10,13 @@ public class InMemoryShoppingLists implements ShoppingListRepository {
     private final Map<String, ShoppingList> shoppingLists = new HashMap<>();
 
     @Override
-    public void add(String shoppingListId, String item) {
-        getInitialized(shoppingListId).addItem(item);
+    public ShoppingList find(String shoppingListId) {
+        return getInitialized(shoppingListId);
+    }
+
+    @Override
+    public ShoppingListItem add(String shoppingListId, String item) {
+        return getInitialized(shoppingListId).addItem(item);
     }
 
     @Override
@@ -31,13 +36,13 @@ public class InMemoryShoppingLists implements ShoppingListRepository {
     }
 
     @Override
-    public void remove(String shoppingListId, String item) {
-        getInitialized(shoppingListId).removeItem(item);
+    public ShoppingListItem remove(String shoppingListId, String item) {
+        return getInitialized(shoppingListId).removeItem(item);
     }
 
     @Override
-    public void buy(String shoppingListId, String item) {
-        getInitialized(shoppingListId).buyItem(item);
+    public ShoppingListItem buy(String shoppingListId, String item) {
+        return getInitialized(shoppingListId).buyItem(item);
     }
 
     @Override

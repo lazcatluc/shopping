@@ -1,9 +1,11 @@
-package ro.contezi.shopping.list.action;
+package ro.contezi.shopping.list.action.item;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import ro.contezi.shopping.facebook.FacebookQuickReply;
 import ro.contezi.shopping.facebook.MessageFromFacebook;
 import ro.contezi.shopping.list.LatestList;
@@ -11,12 +13,15 @@ import ro.contezi.shopping.list.ShoppingList;
 import ro.contezi.shopping.list.ShoppingListItem;
 import ro.contezi.shopping.list.ShoppingListRepository;
 import ro.contezi.shopping.list.ShoppingListView;
+import ro.contezi.shopping.list.action.InformOthers;
+import ro.contezi.shopping.list.action.item.ShoppingListBuy;
 import ro.contezi.shopping.reply.quick.ConditionalQuickReplier;
 
 public class BuyPartialMatches extends ShoppingListBuy implements ConditionalQuickReplier {
     public BuyPartialMatches(ShoppingListRepository shoppingListRepository, ShoppingListView shoppingListView,
-                             LatestList latestList, InformOthers informOthers) {
-        super(shoppingListRepository, shoppingListView, latestList, informOthers);
+                             LatestList latestList, InformOthers informOthers,
+                             SimpMessagingTemplate simpMessagingTemplate) {
+        super(shoppingListRepository, shoppingListView, latestList, informOthers, simpMessagingTemplate);
     }
 
     @Override

@@ -1,8 +1,10 @@
-package ro.contezi.shopping.list.action;
+package ro.contezi.shopping.list.action.item;
 
 import java.text.Normalizer;
 import java.util.Arrays;
 import java.util.Optional;
+
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import ro.contezi.shopping.facebook.FacebookMessage;
 import ro.contezi.shopping.facebook.FacebookQuickReply;
 import ro.contezi.shopping.facebook.MessageFromFacebook;
@@ -10,6 +12,7 @@ import ro.contezi.shopping.list.LatestList;
 import ro.contezi.shopping.list.ShoppingList;
 import ro.contezi.shopping.list.ShoppingListRepository;
 import ro.contezi.shopping.list.ShoppingListView;
+import ro.contezi.shopping.list.action.InformOthers;
 import ro.contezi.shopping.reply.text.ConditionalReplier;
 
 public abstract class ShoppingListAction implements ConditionalReplier {
@@ -28,15 +31,25 @@ public abstract class ShoppingListAction implements ConditionalReplier {
 
     @Override
     public String reply(MessageFromFacebook messageFromFacebook) {
-        ShoppingList shoppingList = latestList.get(messageFromFacebook.getSender().getId());
+        String sender = messageFromFacebook.getSender().getId();
+        ShoppingList shoppingList = latestList.get(sender);
+        String cleanText = getText(messageFromFacebook)
+                .substring(actionDescription().length()).trim();
+        return buildReplies(sender, shoppingList, cleanText);
+    }
+
+    public String buildReplies(String shoppingListId, ShoppingItem shoppingItem) {
+        return buildReplies("", shoppingListRepository.find(shoppingListId), shoppingItem.getItemName());
+    }
+
+    protected String buildReplies(String sender, ShoppingList shoppingList, String cleanText) {
         String shoppingListId = shoppingList.getId();
-        Arrays.stream(getText(messageFromFacebook)
-                .substring(actionDescription().length()).trim().split(","))
+        Arrays.stream(cleanText.split(","))
                 .map(ShoppingListAction::removeUnicode)
                 .map(String::trim)
                 .forEach(item -> executeAction(shoppingListId, item));
         String message = shoppingListView.displayShoppingList(getShoppingListRepository().get(shoppingListId));
-        informOthers.informOthers(messageFromFacebook.getSender(), shoppingList, message);
+        informOthers.informOthers(sender, shoppingList, message);
         return message;
     }
 

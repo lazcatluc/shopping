@@ -65,8 +65,11 @@ public class ShoppingList {
         return myItem;
     }
 
-    public void removeItem(String item) {
-        items.removeIf(contains(item));
+    public ShoppingListItem removeItem(String item) {
+        ShoppingListItem myItem = items.stream().filter(contains(item))
+                .findFirst().orElseGet(() -> addItem(item));
+        items.remove(myItem);
+        return myItem;
     }
     
     public boolean shareWith(Author author) {

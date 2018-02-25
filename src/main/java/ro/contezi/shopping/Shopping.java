@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 import javax.jms.ConnectionFactory;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,6 +24,7 @@ import org.springframework.jms.config.JmsListenerContainerFactory;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.support.converter.MappingJackson2MessageConverter;
 import org.springframework.jms.support.converter.MessageType;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.client.RestTemplate;
 import ro.contezi.shopping.facebook.FacebookMessageProcessor;
@@ -32,27 +34,16 @@ import ro.contezi.shopping.facebook.SignatureValidator;
 import ro.contezi.shopping.facebook.Webhook;
 import ro.contezi.shopping.author.AuthorJpaRepository;
 import ro.contezi.shopping.author.AuthorRepository;
-import ro.contezi.shopping.list.LatestList;
-import ro.contezi.shopping.list.ShoppingListJpaRepository;
-import ro.contezi.shopping.list.ShoppingListMessengerView;
-import ro.contezi.shopping.list.ShoppingListRepository;
-import ro.contezi.shopping.list.ShoppingListView;
-import ro.contezi.shopping.list.action.AcceptShare;
-import ro.contezi.shopping.list.action.BuyPartialMatches;
+import ro.contezi.shopping.list.*;
+import ro.contezi.shopping.list.action.*;
+import ro.contezi.shopping.list.action.item.*;
 import ro.contezi.shopping.reply.quick.CompositeQuickReplier;
 import ro.contezi.shopping.reply.text.CompositeReplier;
 import ro.contezi.shopping.reply.FacebookReplySender;
-import ro.contezi.shopping.list.action.InformOthers;
-import ro.contezi.shopping.list.action.NewShoppingList;
 import ro.contezi.shopping.reply.quick.QuickReplier;
-import ro.contezi.shopping.list.action.RejectShare;
 import ro.contezi.shopping.reply.text.Replier;
 import ro.contezi.shopping.reply.ReplySender;
 import ro.contezi.shopping.reply.text.Rose;
-import ro.contezi.shopping.list.action.ShareList;
-import ro.contezi.shopping.list.action.ShoppingListAdd;
-import ro.contezi.shopping.list.action.ShoppingListBuy;
-import ro.contezi.shopping.list.action.ShoppingListRemove;
 import ro.contezi.shopping.reply.text.ShoppingListReplier;
 
 @SpringBootApplication
@@ -86,21 +77,21 @@ public class Shopping {
     @Autowired
     private JmsTemplate jmsTemplate;
     @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
+    @Autowired
     private ShoppingListJpaRepository shoppingListJpaRepository;
     @Autowired
     private AuthorJpaRepository authorJpaRepository;
-    
+
     @Bean
     public JmsListenerContainerFactory<?> myFactory(ConnectionFactory connectionFactory,
                                                     DefaultJmsListenerContainerFactoryConfigurer configurer) {
         DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
-        // This provides all boot's default to this factory, including the message converter
         configurer.configure(factory, connectionFactory);
-        // You could still override some of Boot's default if necessary.
         return factory;
     }
 
-    @Bean // Serialize message content to json using TextMessage
+    @Bean
     public MappingJackson2MessageConverter jacksonJmsMessageConverter() {
         MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
         converter.setTargetType(MessageType.TEXT);
@@ -108,27 +99,27 @@ public class Shopping {
         return converter;
     }
 
-    
+
     @Bean
     public SignatureValidator signatureValidator() throws InvalidKeyException, NoSuchAlgorithmException {
         return new FacebookWebhookSignatureValidator(facebookSecret);
     }
-    
+
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();
     }
-    
+
     @Bean
     public Replier rose() throws URISyntaxException {
         return new Rose(roseUrl, restTemplate());
     }
-    
+
     @Bean
     public AuthorRepository authorRepository() {
         return new AuthorRepository(authorJpaRepository, graphApi());
     }
-    
+
     @Bean
     public GraphApi graphApi() {
         return new GraphApi(graphApiHost, graphApiVersion, facebookToken, restTemplate(),
@@ -139,22 +130,40 @@ public class Shopping {
     public LatestList latestList() {
         return new LatestList(shoppingListRepository(), authorRepository());
     }
-    
+
     @Bean
     public Replier replyProvider() throws URISyntaxException {
         return new CompositeReplier(rose(), authorRepository(), Arrays.asList(
-            new ShoppingListAdd(shoppingListRepository(), shoppingListView(), latestList(), informOthers()),
-            new ShoppingListRemove(shoppingListRepository(), shoppingListView(), latestList(), informOthers()),
-            new ShoppingListBuy(shoppingListRepository(), shoppingListView(), latestList(), informOthers()),
-            buyPartialMatches(),
-            new ShoppingListReplier(shoppingListView(), latestList()),
-            new ShareList(latestList(), authorRepository(), replySender()),
-            new AcceptShare(shoppingListRepository(), authorRepository(), shoppingListView(), replySender()),
-            new RejectShare(),
-            new NewShoppingList(shoppingListRepository(), shoppingListView(), authorRepository())
+                shoppingListAdd(),
+                shoppingListRemove(),
+                shoppingListBuy(),
+                buyPartialMatches(),
+                new ShoppingListReplier(shoppingListView(), latestList()),
+                new ShareList(latestList(), authorRepository(), replySender()),
+                new AcceptShare(shoppingListRepository(), authorRepository(), shoppingListView(), replySender()),
+                new RejectShare(),
+                new NewShoppingList(shoppingListRepository(), shoppingListView(), authorRepository())
         ));
     }
-    
+
+    @Bean
+    public ShoppingListBuy shoppingListBuy() {
+        return new ShoppingListBuy(shoppingListRepository(), shoppingListView(), latestList(), informOthers(),
+                simpMessagingTemplate);
+    }
+
+    @Bean
+    public ShoppingListRemove shoppingListRemove() {
+        return new ShoppingListRemove(shoppingListRepository(), shoppingListView(), latestList(), informOthers(),
+                simpMessagingTemplate);
+    }
+
+    @Bean
+    public ShoppingListAdd shoppingListAdd() {
+        return new ShoppingListAdd(shoppingListRepository(), shoppingListView(), latestList(), informOthers(),
+                simpMessagingTemplate);
+    }
+
     @Bean
     public QuickReplier quickReplyProvider() {
         return new CompositeQuickReplier(Collections.singletonList(
@@ -164,7 +173,8 @@ public class Shopping {
 
     @Bean
     public BuyPartialMatches buyPartialMatches() {
-        return new BuyPartialMatches(shoppingListRepository(), shoppingListView(), latestList(), informOthers());
+        return new BuyPartialMatches(shoppingListRepository(), shoppingListView(), latestList(), informOthers(),
+                simpMessagingTemplate);
     }
 
     @Bean
@@ -186,7 +196,7 @@ public class Shopping {
     public MessageLogger messageLogger() {
         return LOGGER::info;
     }
-    
+
     @Bean
     public FacebookMessageProcessor facebookMessageProcessor() throws URISyntaxException {
         return new FacebookMessageProcessor(replyProvider(), replySender(),
@@ -212,6 +222,16 @@ public class Shopping {
     @Bean
     public ConfigurableUser friend() {
         return new ConfigurableUser(friend);
+    }
+
+    @Bean
+    public ShoppingItemController shoppingItemController() {
+        return new ShoppingItemController(shoppingListAdd(), shoppingListBuy(), shoppingListRemove());
+    }
+
+    @Bean
+    public ShoppingListController shoppingListController() {
+        return new ShoppingListController(latestList());
     }
 
     public static void main(String[] args) {

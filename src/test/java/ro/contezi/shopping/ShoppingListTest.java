@@ -12,15 +12,17 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import ro.contezi.shopping.facebook.FacebookMessage;
 import ro.contezi.shopping.facebook.TargetedMessage;
 import ro.contezi.shopping.list.LatestList;
 import ro.contezi.shopping.list.ShoppingList;
-import ro.contezi.shopping.list.action.ShoppingListAction;
+import ro.contezi.shopping.list.action.item.ShoppingListAction;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ShoppingListTestConfig.class)
+@ActiveProfiles("default")
 public class ShoppingListTest {
     private static final Logger LOGGER = getLogger(ShoppingListTest.class);
 

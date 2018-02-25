@@ -1,24 +1,33 @@
-package ro.contezi.shopping.list.action;
+package ro.contezi.shopping.list.action.item;
 
 import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import ro.contezi.shopping.list.LatestList;
 import ro.contezi.shopping.list.ShoppingList;
 import ro.contezi.shopping.list.ShoppingListItem;
 import ro.contezi.shopping.list.ShoppingListRepository;
 import ro.contezi.shopping.list.ShoppingListView;
+import ro.contezi.shopping.list.action.InformOthers;
 
 public class ShoppingListBuy extends ShoppingListAction {
 
+    private final SimpMessagingTemplate simpMessagingTemplate;
+
     public ShoppingListBuy(ShoppingListRepository shoppingListRepository, ShoppingListView shoppingListView,
-                           LatestList latestList, InformOthers informOthers) {
+                           LatestList latestList, InformOthers informOthers,
+                           SimpMessagingTemplate simpMessagingTemplate) {
         super(latestList, shoppingListView, informOthers, shoppingListRepository);
+        this.simpMessagingTemplate = simpMessagingTemplate;
     }
 
     @Override
-    protected void executeAction(String shoppingListId, String item) {
-        getShoppingListRepository().buy(shoppingListId, item);
+    public void executeAction(String shoppingListId, String item) {
+        ShoppingListItem shoppingListItem = getShoppingListRepository().buy(shoppingListId, item);
+        ShoppingItem shoppingItem = new ShoppingItem(shoppingListItem);
+        simpMessagingTemplate.convertAndSend("/topic/items/"+shoppingListId, shoppingItem);
     }
 
     @Override
