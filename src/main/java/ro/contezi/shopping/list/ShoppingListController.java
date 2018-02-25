@@ -1,8 +1,11 @@
 package ro.contezi.shopping.list;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+@RequestMapping("/users")
 public class ShoppingListController {
     private final LatestList latestList;
 
@@ -10,9 +13,9 @@ public class ShoppingListController {
         this.latestList = latestList;
     }
 
-    @GetMapping("/users/{userId}/lists/latest")
+    @GetMapping("/{userId}/lists/latest")
     @ResponseBody
-    public ShoppingList getShoppingList(String userId) {
+    public ShoppingList getShoppingList(@PathVariable String userId) {
         return latestList.get(userId);
     }
 }
