@@ -28,6 +28,7 @@ import org.springframework.jms.support.converter.MappingJackson2MessageConverter
 import org.springframework.jms.support.converter.MessageType;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.client.RestTemplate;
 import ro.contezi.shopping.facebook.FacebookMessageProcessor;
 import ro.contezi.shopping.facebook.FacebookWebhookSignatureValidator;
