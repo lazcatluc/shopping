@@ -1,13 +1,17 @@
 package ro.contezi.shopping.facebook;
 
 import java.util.List;
+
+import org.slf4j.Logger;
 import org.springframework.jms.annotation.JmsListener;
 import ro.contezi.shopping.reply.quick.QuickReplier;
 import ro.contezi.shopping.reply.text.Replier;
 import ro.contezi.shopping.reply.ReplySender;
 
-public class FacebookMessageProcessor {
+import static org.slf4j.LoggerFactory.getLogger;
 
+public class FacebookMessageProcessor {
+    private static final Logger LOGGER = getLogger(FacebookMessageProcessor.class);
     private final Replier replier;
     private final ReplySender replySender;
     private final QuickReplier quickReplier;

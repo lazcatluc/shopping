@@ -37,6 +37,7 @@ import ro.contezi.shopping.facebook.SignatureValidator;
 import ro.contezi.shopping.facebook.Webhook;
 import ro.contezi.shopping.author.AuthorJpaRepository;
 import ro.contezi.shopping.author.AuthorRepository;
+import ro.contezi.shopping.info.InfoController;
 import ro.contezi.shopping.list.*;
 import ro.contezi.shopping.list.action.*;
 import ro.contezi.shopping.list.action.item.*;
@@ -73,6 +74,10 @@ public class Shopping {
     private String pageId;
     @Value("${facebook.app.id}")
     private String appId;
+    @Value("${version.number}")
+    private String appVersion;
+    @Value("${build.timestamp}")
+    private String buildTimestamp;
     @Value("#{${users.default}}")
     private Map<String, String> user;
     @Value("#{${users.friend}}")
@@ -230,6 +235,11 @@ public class Shopping {
     @Bean
     public ShoppingListController shoppingListController() {
         return new ShoppingListController(latestList(), authorJpaRepository);
+    }
+
+    @Bean
+    public InfoController infoController() {
+        return new InfoController(appId, graphApiVersion, appVersion + "." + buildTimestamp);
     }
 
     public static void main(String[] args) {

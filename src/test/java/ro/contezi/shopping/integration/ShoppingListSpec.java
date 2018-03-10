@@ -10,7 +10,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class ShoppingListSpec extends SeleniumFixture {
-    private static final Logger LOGGER = getLogger(ShoppingListSpec.class);
     @Value("${server.port}")
     private int port;
 
