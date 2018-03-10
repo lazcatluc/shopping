@@ -123,6 +123,7 @@
                 <directory>src/main/resources</directory>
                 <includes>
                     <include>application.properties</include>
+                    <include>application-itest.properties</include>
                 </includes>
             </resource>
         </resources>
