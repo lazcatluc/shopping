@@ -8,8 +8,6 @@ import java.util.Collections;
 import java.util.Map;
 import javax.jms.ConnectionFactory;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,7 +26,6 @@ import org.springframework.jms.support.converter.MappingJackson2MessageConverter
 import org.springframework.jms.support.converter.MessageType;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.client.RestTemplate;
 import ro.contezi.shopping.facebook.FacebookMessageProcessor;
 import ro.contezi.shopping.facebook.FacebookWebhookSignatureValidator;
@@ -233,8 +230,13 @@ public class Shopping {
     }
 
     @Bean
+    public UserListController userListController() {
+        return new UserListController(latestList(), authorJpaRepository);
+    }
+
+    @Bean
     public ShoppingListController shoppingListController() {
-        return new ShoppingListController(latestList(), authorJpaRepository);
+        return new ShoppingListController(shoppingListRepository());
     }
 
     @Bean

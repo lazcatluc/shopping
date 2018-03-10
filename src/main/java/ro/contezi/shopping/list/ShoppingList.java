@@ -119,7 +119,9 @@ public class ShoppingList {
         if (author != null) {
             authors.add(author);
         }
-        shares.stream().map(SharedList::getAuthor).forEach(authors::add);
+        if (shares != null) {
+            shares.stream().map(SharedList::getAuthor).forEach(authors::add);
+        }
         return authors;
     }
     

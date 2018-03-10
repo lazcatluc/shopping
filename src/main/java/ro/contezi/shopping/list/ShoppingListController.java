@@ -5,24 +5,22 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import ro.contezi.shopping.author.AuthorJpaRepository;
 
-@RequestMapping("/users")
+@RequestMapping("/lists")
 public class ShoppingListController {
-    private final LatestList latestList;
-    private final AuthorJpaRepository authorRepository;
+    private final ShoppingListRepository shoppingListRepository;
 
-    public ShoppingListController(LatestList latestList, AuthorJpaRepository authorRepository) {
-        this.latestList = latestList;
-        this.authorRepository = authorRepository;
+    public ShoppingListController(ShoppingListRepository shoppingListRepository) {
+        this.shoppingListRepository = shoppingListRepository;
     }
 
-    @GetMapping("/{userId}/lists/latest")
+    @GetMapping("/{shoppingListId}")
     @ResponseBody
-    public ResponseEntity<ShoppingList> getShoppingList(@PathVariable String userId) {
-        if (authorRepository.findOne(userId) == null) {
+    public ResponseEntity<ShoppingList> getShoppingList(@PathVariable String shoppingListId) {
+        ShoppingList shoppingList = shoppingListRepository.find(shoppingListId);
+        if (shoppingList == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(latestList.get(userId));
+        return ResponseEntity.ok(shoppingList);
     }
 }

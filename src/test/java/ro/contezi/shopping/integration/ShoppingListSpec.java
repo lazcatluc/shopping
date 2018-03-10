@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import ro.contezi.shopping.list.ShoppingList;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -36,8 +37,10 @@ public class ShoppingListSpec extends SeleniumFixture {
         typeMessageAndAwaitResponse("add apples");
 
         assertThat(lastMessage()).contains("cheese", "apples", "bread");
-        String response = testRestTemplate.getForObject("http://localhost:{port}/users/{userId}/lists/latest",
-                String.class, port, getUser().getId());
+        ShoppingList shoppingList = testRestTemplate.getForObject("http://localhost:{port}/users/{userId}/lists/latest",
+                ShoppingList.class, port, getUser().getId());
+        String response = testRestTemplate.getForObject("http://localhost:{port}/lists/{shoppingListId}",
+                String.class, port, shoppingList.getId());
         assertThat(response).contains("cheese", "apples", "bread");
     }
 
