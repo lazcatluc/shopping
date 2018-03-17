@@ -38,6 +38,8 @@ import ro.contezi.shopping.info.InfoController;
 import ro.contezi.shopping.list.*;
 import ro.contezi.shopping.list.action.*;
 import ro.contezi.shopping.list.action.item.*;
+import ro.contezi.shopping.reply.button.CompositeUrlReplier;
+import ro.contezi.shopping.reply.button.UrlReplier;
 import ro.contezi.shopping.reply.quick.CompositeQuickReplier;
 import ro.contezi.shopping.reply.text.CompositeReplier;
 import ro.contezi.shopping.reply.FacebookReplySender;
@@ -87,6 +89,8 @@ public class Shopping {
     private ShoppingListJpaRepository shoppingListJpaRepository;
     @Autowired
     private AuthorJpaRepository authorJpaRepository;
+    @Value("${app.url}")
+    private String applicationUrl;
 
     @Bean
     public JmsListenerContainerFactory<?> myFactory(ConnectionFactory connectionFactory,
@@ -144,11 +148,31 @@ public class Shopping {
                 shoppingListBuy(),
                 buyPartialMatches(),
                 new ShoppingListReplier(shoppingListView(), latestList()),
-                new ShareList(latestList(), authorRepository(), replySender()),
-                new AcceptShare(shoppingListRepository(), authorRepository(), shoppingListView(), replySender()),
+                shareList(),
+                acceptShare(),
                 new RejectShare(),
                 new NewShoppingList(shoppingListRepository(), shoppingListView(), authorRepository())
         ));
+    }
+
+    @Bean
+    public AcceptShare acceptShare() {
+        return new AcceptShare(shoppingListRepository(), authorRepository(), shoppingListView(), replySender());
+    }
+
+    @Bean
+    public ShareUrl acceptShareUrl() {
+        return new ShareUrl(acceptShare(), applicationUrl, latestList());
+    }
+
+    @Bean
+    public ShareList shareList() {
+        return new ShareList(latestList(), authorRepository(), replySender());
+    }
+
+    @Bean
+    public ShareUrl shareListUrl() {
+        return new ShareUrl(shareList(), applicationUrl, latestList());
     }
 
     @Bean
@@ -174,6 +198,11 @@ public class Shopping {
         return new CompositeQuickReplier(Collections.singletonList(
                 buyPartialMatches()
         ));
+    }
+
+    @Bean
+    public UrlReplier urlReplier() {
+        return new CompositeUrlReplier(Arrays.asList(shareListUrl(), acceptShareUrl()));
     }
 
     @Bean
@@ -205,7 +234,7 @@ public class Shopping {
     @Bean
     public FacebookMessageProcessor facebookMessageProcessor() throws URISyntaxException {
         return new FacebookMessageProcessor(replyProvider(), replySender(),
-                quickReplyProvider(), messageLogger());
+                quickReplyProvider(), urlReplier(), messageLogger());
     }
 
     @Bean

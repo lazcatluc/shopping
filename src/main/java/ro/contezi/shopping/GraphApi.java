@@ -4,6 +4,9 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 import java.net.URI;
 import org.slf4j.Logger;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -40,7 +43,7 @@ public class GraphApi {
         return restTemplate.getForEntity(uri, Author.class).getBody();
     }
 
-    public void registerWebhook(String webhookUrl) {
+    public void registerWebhook(String url, String webhook) {
         URI accessTokenUri = graphiApiUri("oauth", "access_token")
                 .queryParam("client_id", appId)
                 .queryParam("client_secret", appSecret)
@@ -49,17 +52,19 @@ public class GraphApi {
                 .getBody();
         URI uri = graphiApiUri(pageId, "subscriptions")
                 .queryParam("object", "page")
-                .queryParam("callback_url", webhookUrl)
+                .queryParam("callback_url", url + webhook)
                 .queryParam("fields", "messages,messaging_postbacks,messaging_postbacks,messaging_optins")
                 .queryParam("verify_token", "verify_me")
                 .queryParam("access_token", appAccessToken.getAccessToken()).build().toUri();
         LOGGER.info("Changing webhook: {}", uri);
-        try {
-            restTemplate.postForLocation(uri, "");
-        }
-        catch (RestClientException re) {
-            throw re;
-        }
+        restTemplate.postForLocation(uri, "");
+        uri = graphiApiUri("me", "messenger_profile")
+                .queryParam("access_token", pageAccessToken).build().toUri();
+        LOGGER.info("Whitelisting domain: {}", uri);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<DomainWhitelist> entity = new HttpEntity<>(new DomainWhitelist(url), headers);
+        restTemplate.postForLocation(uri, entity);
     }
 
     protected UriComponentsBuilder graphiApiUri(String... pathsSegments) {

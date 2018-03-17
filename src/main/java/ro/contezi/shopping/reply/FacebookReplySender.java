@@ -1,23 +1,22 @@
 package ro.contezi.shopping.reply;
 
-import java.util.Arrays;
-
-import org.apache.log4j.Logger;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.*;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
-
 import ro.contezi.shopping.facebook.FacebookReply;
 
-public class FacebookReplySender implements ReplySender {
+import java.net.URI;
+import java.util.Arrays;
 
-    private static final Logger LOGGER = Logger.getLogger(FacebookReplySender.class);
+import static org.slf4j.LoggerFactory.getLogger;
+
+public class FacebookReplySender implements ReplySender {
+    private static final org.slf4j.Logger LOGGER = getLogger(FacebookReplySender.class);
 
     private final RestTemplate restTemplate;
     private final String pageAccessToken;
@@ -39,11 +38,24 @@ public class FacebookReplySender implements ReplySender {
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(graphApiUrl);
         UriComponents uriComponents = uriBuilder.queryParam("access_token", pageAccessToken).build();
         HttpEntity<FacebookReply> entity = new HttpEntity<>(reply, httpHeaders);
+        URI url = uriComponents.encode().toUri();
         LOGGER.info("Sending " + reply);
-        ResponseEntity<String> response = restTemplate.exchange(uriComponents.encode().toUri(), HttpMethod.POST, entity,
-                String.class);
+        LOGGER.debug("Url: " + url);
+        if (LOGGER.isDebugEnabled()) {
+            try {
+                LOGGER.debug("Post data: " + new ObjectMapper().writeValueAsString(entity));
+            } catch (JsonProcessingException e) {
+                LOGGER.error(e.getMessage(), e);
+            }
+        }
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity,
+                    String.class);
 
-        LOGGER.info(response);
+            LOGGER.info("Response: {}" + response);
+        } catch (HttpClientErrorException hcee) {
+            LOGGER.error(hcee.getResponseBodyAsString(), hcee);
+        }
     }
 
 }

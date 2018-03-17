@@ -29,5 +29,8 @@ pids.out
 target
 log/
 **/static/api/*
+**/static/index.html
+**/static/app.js
+**/static/app.js.map
 LOG_FILE_IS_UNDEFINED*
 *.properties

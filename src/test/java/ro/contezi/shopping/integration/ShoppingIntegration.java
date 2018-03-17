@@ -6,13 +6,14 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Profile;
-import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import ro.contezi.shopping.Shopping;
+import ro.contezi.shopping.author.AuthorRepository;
+import ro.contezi.shopping.list.LatestList;
+import ro.contezi.shopping.list.action.AcceptShare;
+import ro.contezi.shopping.list.action.ShareList;
+import ro.contezi.shopping.list.action.ShareUrl;
 import ro.contezi.shopping.reply.FacebookReplySender;
 import ro.contezi.shopping.reply.ReplySender;
 
@@ -50,4 +51,15 @@ public class ShoppingIntegration {
         return new FacebookReplySender(restTemplate, facebookToken, graphApiUrl);
     }
 
+    @Bean
+    @Profile("itest")
+    public ShareUrl acceptShareUrl(AcceptShare acceptShare, LatestList latestList) throws IOException {
+        return new ShareUrl(acceptShare, ngrok().getUrl(), latestList);
+    }
+
+    @Bean
+    @Profile("itest")
+    public ShareUrl shareListUrl(ShareList shareList, LatestList latestList) throws IOException {
+        return new ShareUrl(shareList, ngrok().getUrl(), latestList);
+    }
 }

@@ -1,19 +1,16 @@
 package ro.contezi.shopping.list.action;
 
-import java.util.Arrays;
-import java.util.List;
 import org.apache.log4j.Logger;
-import ro.contezi.shopping.facebook.FacebookMessage;
-import ro.contezi.shopping.facebook.FacebookQuickReply;
-import ro.contezi.shopping.facebook.FacebookReply;
-import ro.contezi.shopping.facebook.FacebookUser;
-import ro.contezi.shopping.facebook.MessageFromFacebook;
 import ro.contezi.shopping.author.Author;
 import ro.contezi.shopping.author.AuthorRepository;
+import ro.contezi.shopping.facebook.*;
 import ro.contezi.shopping.list.LatestList;
 import ro.contezi.shopping.list.ShoppingList;
 import ro.contezi.shopping.reply.ReplySender;
 import ro.contezi.shopping.reply.text.ConditionalReplier;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class ShareList implements ConditionalReplier {
 
@@ -56,7 +53,7 @@ public class ShareList implements ConditionalReplier {
                 new FacebookMessage(shoppingList.getAuthor().getFirstName()+" "+shoppingList.getAuthor().getLastName() + " would like to share the shopping list with you!", 
                         Arrays.asList(new FacebookQuickReply.Builder().withTitle("OK").withPayload("accept_share "+shoppingList.getId()).build(),
                                       new FacebookQuickReply.Builder().withTitle("No, thanks").withPayload("reject_share "+shoppingList.getId()).build()
-                        ), null));
+                        ), null, null));
         replySender.send(replyToShare);
         return "Ok, I've asked " + name + " if they want to share!";
     }

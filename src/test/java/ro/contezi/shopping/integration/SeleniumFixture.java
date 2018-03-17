@@ -59,7 +59,7 @@ public class SeleniumFixture {
     @Before
     public void setUp() throws InterruptedException {
         if (!INITIALIZED_WEBHOOK.getAndSet(true)) {
-            graphApi.registerWebhook(ngrok.getUrl() + "/webhook");
+            graphApi.registerWebhook(ngrok.getUrl(), "/webhook");
         }
         webDriver.get(baseUrl);
         login(user);

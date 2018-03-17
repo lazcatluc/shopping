@@ -8,6 +8,6 @@ public interface ReplySender {
     void send(FacebookReply reply);
     default void send(String senderId, String message) {
         send(new FacebookReply(new FacebookUser(senderId),
-                new FacebookMessage(message, null, null)));
+                new FacebookMessage(message, null, null, null)));
     }
 }

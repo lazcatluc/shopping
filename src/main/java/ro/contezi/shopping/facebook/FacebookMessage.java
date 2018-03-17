@@ -12,14 +12,29 @@ public class FacebookMessage {
     private final String text;
     private final List<FacebookQuickReply> quickReplies;
     private final FacebookQuickReply quickReply;
+    private final FacebookReplyAttachment attachment;
 
     @JsonCreator
     public FacebookMessage(@JsonProperty("text") String text,
                            @JsonProperty("quick_replies") List<FacebookQuickReply> quickReplies,
-                           @JsonProperty("quick_reply") FacebookQuickReply quickReply) {
+                           @JsonProperty("quick_reply") FacebookQuickReply quickReply,
+                           @JsonProperty("attachment") FacebookReplyAttachment attachment) {
         this.text = text;
         this.quickReplies = quickReplies;
         this.quickReply = quickReply;
+        this.attachment = attachment;
+    }
+
+    public FacebookMessage(String text) {
+        this(text, null, null, null);
+    }
+
+    public FacebookMessage(List<FacebookUrlButton> buttons) {
+        text = null;
+        quickReplies = null;
+        quickReply = null;
+        attachment = new FacebookReplyAttachment();
+        attachment.getPayload().setButtons(buttons);
     }
 
     public String getText() {
@@ -34,6 +49,11 @@ public class FacebookMessage {
     @JsonProperty("quick_reply")
     public FacebookQuickReply getQuickReply() {
         return quickReply;
+    }
+
+    @JsonProperty("attachment")
+    public FacebookReplyAttachment getAttachment() {
+        return attachment;
     }
 
     @Override
