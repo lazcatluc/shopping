@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.springframework.jms.annotation.JmsListener;
+import org.springframework.util.StringUtils;
 import ro.contezi.shopping.reply.button.UrlReplier;
 import ro.contezi.shopping.reply.quick.QuickReplier;
 import ro.contezi.shopping.reply.text.Replier;
@@ -36,15 +37,18 @@ public class FacebookMessageProcessor {
         messageLogger.logMessage(messageFromFacebook);
         String reply = replier.reply(messageFromFacebook);
         List<FacebookQuickReply> quickReplies = quickReplier.quickReply(messageFromFacebook);
-        FacebookMessage message;
+        FacebookMessage message = null;
         if (!quickReplies.isEmpty()) {
             message = new FacebookMessage(reply, quickReplies, null, null);
         } else {
-            message = new FacebookMessage(reply);
+            if (!StringUtils.isEmpty(reply)) {
+                message = new FacebookMessage(reply);
+            }
         }
         FacebookUser sender = messageFromFacebook.getSender();
-        FacebookReply facebookReply = new FacebookReply(sender, message);
-        replySender.send(facebookReply);
+        if (message !=  null) {
+            replySender.send(new FacebookReply(sender, message));
+        }
         List<FacebookUrlButton> urlReplies = urlReplier.buttonReply(messageFromFacebook);
         if (!urlReplies.isEmpty()) {
             replySender.send(new FacebookReply(sender, new FacebookMessage(urlReplies)));

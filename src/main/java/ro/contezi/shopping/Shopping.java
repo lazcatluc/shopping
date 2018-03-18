@@ -3,9 +3,7 @@ package ro.contezi.shopping;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Map;
+import java.util.*;
 import javax.jms.ConnectionFactory;
 
 import org.apache.log4j.Logger;
@@ -27,11 +25,7 @@ import org.springframework.jms.support.converter.MessageType;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.client.RestTemplate;
-import ro.contezi.shopping.facebook.FacebookMessageProcessor;
-import ro.contezi.shopping.facebook.FacebookWebhookSignatureValidator;
-import ro.contezi.shopping.facebook.MessageLogger;
-import ro.contezi.shopping.facebook.SignatureValidator;
-import ro.contezi.shopping.facebook.Webhook;
+import ro.contezi.shopping.facebook.*;
 import ro.contezi.shopping.author.AuthorJpaRepository;
 import ro.contezi.shopping.author.AuthorRepository;
 import ro.contezi.shopping.info.InfoController;
@@ -142,7 +136,7 @@ public class Shopping {
 
     @Bean
     public Replier replyProvider() throws URISyntaxException {
-        return new CompositeReplier(rose(), authorRepository(), Arrays.asList(
+        return new CompositeReplier(roseExcludingShares(rose(), openListStrings()), authorRepository(), Arrays.asList(
                 shoppingListAdd(),
                 shoppingListRemove(),
                 shoppingListBuy(),
@@ -153,6 +147,15 @@ public class Shopping {
                 new RejectShare(),
                 new NewShoppingList(shoppingListRepository(), shoppingListView(), authorRepository())
         ));
+    }
+
+    private Replier roseExcludingShares(Replier rose, Set<String> openListStrings) {
+        return messageFromFacebook -> {
+            if (openListStrings.contains(messageFromFacebook.getText().getText().toLowerCase())) {
+                return "";
+            }
+            return rose.reply(messageFromFacebook);
+        };
     }
 
     @Bean
@@ -177,8 +180,16 @@ public class Shopping {
 
     @Bean
     public ShareUrl openList() {
-        return new ShareUrl(messageFromFacebook -> messageFromFacebook.getText().getText().toLowerCase().equals("open"),
-                applicationUrl, latestList());
+        return new ShareUrl(messageFromFacebook -> openListStrings().contains(
+                messageFromFacebook.getText().getText().toLowerCase()), applicationUrl, latestList());
+    }
+
+    @Bean
+    public Set<String> openListStrings() {
+        Set<String> openTexts = new HashSet<>();
+        openTexts.add("open");
+        openTexts.add("share");
+        return openTexts;
     }
 
     @Bean
