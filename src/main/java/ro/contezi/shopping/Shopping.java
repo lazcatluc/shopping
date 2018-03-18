@@ -176,6 +176,12 @@ public class Shopping {
     }
 
     @Bean
+    public ShareUrl openList() {
+        return new ShareUrl(messageFromFacebook -> messageFromFacebook.getText().getText().toLowerCase().equals("open"),
+                applicationUrl, latestList());
+    }
+
+    @Bean
     public ShoppingListBuy shoppingListBuy() {
         return new ShoppingListBuy(shoppingListRepository(), shoppingListView(), latestList(), informOthers(),
                 simpMessagingTemplate);
@@ -202,7 +208,7 @@ public class Shopping {
 
     @Bean
     public UrlReplier urlReplier() {
-        return new CompositeUrlReplier(Arrays.asList(shareListUrl(), acceptShareUrl()));
+        return new CompositeUrlReplier(Arrays.asList(shareListUrl(), acceptShareUrl(), openList()));
     }
 
     @Bean

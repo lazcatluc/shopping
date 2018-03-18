@@ -9,14 +9,19 @@ import ro.contezi.shopping.reply.text.ConditionalReplier;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class ShareUrl implements ConditionalUrlReplier {
 
-    private final ConditionalReplier acceptShare;
+    private final Predicate<MessageFromFacebook> acceptShare;
     private final String applicationUrl;
     private final LatestList latestList;
 
     public ShareUrl(ConditionalReplier acceptShare, String applicationUrl, LatestList latestList) {
+        this(acceptShare::applies, applicationUrl, latestList);
+    }
+
+    public ShareUrl(Predicate<MessageFromFacebook> acceptShare, String applicationUrl, LatestList latestList) {
         this.acceptShare = acceptShare;
         this.applicationUrl = applicationUrl;
         this.latestList = latestList;
@@ -24,7 +29,7 @@ public class ShareUrl implements ConditionalUrlReplier {
 
     @Override
     public boolean appliesUrl(MessageFromFacebook messageFromFacebook) {
-        return acceptShare.applies(messageFromFacebook);
+        return acceptShare.test(messageFromFacebook);
     }
 
     @Override
