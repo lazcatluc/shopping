@@ -23,6 +23,8 @@ public class ShoppingListItem {
     private ZonedDateTime addedDate = ZonedDateTime.now();
     @Column
     private ZonedDateTime boughtDate;
+    @Column
+    private Double cost;
     
     public String getId() {
         return id;
@@ -84,5 +86,12 @@ public class ShoppingListItem {
     public String toString() {
         return itemName + "=" + (boughtDate!=null);
     }
-    
+
+    public Double getCost() {
+        return cost;
+    }
+
+    public void setCost(Double cost) {
+        this.cost = cost;
+    }
 }

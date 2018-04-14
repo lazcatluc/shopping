@@ -14,14 +14,15 @@ public class ShoppingItemController {
     private final ShoppingListAdd shoppingListAdd;
     private final ShoppingListBuy shoppingListBuy;
     private final ShoppingListRemove shoppingListRemove;
+    private final ShoppingItemCost shoppingItemCost;
 
     @Autowired
-    public ShoppingItemController(ShoppingListAdd shoppingListAdd,
-                                  ShoppingListBuy shoppingListBuy,
-                                  ShoppingListRemove shoppingListRemove) {
+    public ShoppingItemController(ShoppingListAdd shoppingListAdd, ShoppingListBuy shoppingListBuy,
+                                  ShoppingListRemove shoppingListRemove, ShoppingItemCost shoppingItemCost) {
         this.shoppingListAdd = shoppingListAdd;
         this.shoppingListBuy = shoppingListBuy;
         this.shoppingListRemove = shoppingListRemove;
+        this.shoppingItemCost = shoppingItemCost;
     }
 
     @MessageMapping("/item")
@@ -32,6 +33,7 @@ public class ShoppingItemController {
             return shoppingItem;
         }
         if (shoppingItem.isBought()) {
+            shoppingItemCost.setCost(shoppingItem.getShoppingListId(), shoppingItem);
             shoppingListBuy.buildReplies(shoppingItem.getShoppingListId(), shoppingItem);
             return shoppingItem;
         }

@@ -17,7 +17,6 @@ import org.springframework.web.socket.messaging.WebSocketStompClient;
 import org.springframework.web.socket.sockjs.client.SockJsClient;
 import org.springframework.web.socket.sockjs.client.Transport;
 import org.springframework.web.socket.sockjs.client.WebSocketTransport;
-import ro.contezi.shopping.author.Author;
 import ro.contezi.shopping.list.ShoppingList;
 import ro.contezi.shopping.list.ShoppingListRepository;
 import ro.contezi.shopping.list.action.item.ShoppingItem;
@@ -84,7 +83,7 @@ public class WebSocketConfigSpec {
                     }
                 });
                 try {
-                    session.send("/ws/item", new ShoppingItem("1", shoppingList.getId(), "hello", false, false));
+                    session.send("/ws/item", new ShoppingItem("1", shoppingList.getId(), "hello", false, false, 1.0));
                 } catch (RuntimeException t) {
                     failure.set(t);
                     latch.countDown();
