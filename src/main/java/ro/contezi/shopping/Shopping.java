@@ -89,6 +89,10 @@ public class Shopping {
     private String applicationUrl;
     @Autowired
     private ShoppingListItemJpaRepository shoppingListItemJpaRepository;
+    @Value("${minimumBuyThreshold:5}")
+    private int minimumBuyThreshold;
+    @Autowired
+    private SuggestionRemovalRepository suggestionRemovalRepository;
 
     @Bean
     public JmsListenerContainerFactory<?> myFactory(ConnectionFactory connectionFactory,
@@ -205,7 +209,7 @@ public class Shopping {
     @Bean
     public ShoppingListRemove shoppingListRemove() {
         return new ShoppingListRemove(shoppingListRepository(), shoppingListView(), latestList(), informOthers(),
-                simpMessagingTemplate);
+                simpMessagingTemplate, suggestionRemovalRepository, authorRepository());
     }
 
     @Bean
@@ -216,12 +220,14 @@ public class Shopping {
 
     @Bean
     public ItemSuggestions itemSuggestions() {
-        return new ItemSuggestions(shoppingListItemJpaRepository, suggestionsSize);
+        return new ItemSuggestions(shoppingListItemJpaRepository, suggestionsSize, minimumBuyThreshold,
+                suggestionRemovalRepository);
     }
 
     @Bean
     public ShoppingListSuggest shoppingListSuggest() {
-        return new ShoppingListSuggest(shoppingListAdd(), itemSuggestions(), authorRepository(), latestList());
+        return new ShoppingListSuggest(shoppingListAdd(), itemSuggestions(), authorRepository(), latestList(),
+                shoppingListRepository());
     }
 
     @Bean

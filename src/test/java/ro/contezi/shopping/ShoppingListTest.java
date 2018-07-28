@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.List;
+import java.util.stream.IntStream;
+
 import org.assertj.core.api.AbstractCharSequenceAssert;
 import org.junit.After;
 import org.junit.Before;
@@ -104,12 +106,13 @@ public class ShoppingListTest {
 
     @Test
     public void getsSuggestionsInOrderOfMostRelevant() throws Exception {
-        user.says("new")
-            .adds("cheese")
-            .adds("water")
-            .adds("cola")
-            .buys("cheese")
-            .buys("water");
+        IntStream.range(0, 5).forEach(i ->
+            user.says("new")
+                .adds("cheese")
+                .adds("water")
+                .adds("cola")
+                .buys("cheese")
+                .buys("water"));
         user.says("new")
             .adds("cheese")
             .adds("water")
@@ -127,6 +130,9 @@ public class ShoppingListTest {
         user.says("new")
             .says("suggest");
         assertLatestList().contains("items=[cola=false, water=false, cheese=false]");
+        user.removes("cola")
+            .says("suggest");
+        assertLatestList().contains("items=[water=false, cheese=false]");
     }
 
     @Test

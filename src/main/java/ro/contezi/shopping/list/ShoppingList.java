@@ -145,5 +145,7 @@ public class ShoppingList {
                 + "]";
     }
 
-
+    public void setSuggested(String suggestedItem) {
+        items.stream().filter(contains(suggestedItem)).findFirst().ifPresent(item -> item.setSuggested(true));
+    }
 }

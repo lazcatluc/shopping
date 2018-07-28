@@ -6,6 +6,7 @@ import ro.contezi.shopping.facebook.FacebookMessage;
 import ro.contezi.shopping.facebook.MessageFromFacebook;
 import ro.contezi.shopping.list.LatestList;
 import ro.contezi.shopping.list.ShoppingList;
+import ro.contezi.shopping.list.ShoppingListRepository;
 import ro.contezi.shopping.reply.text.ConditionalReplier;
 
 import java.util.List;
@@ -16,13 +17,16 @@ public class ShoppingListSuggest implements ConditionalReplier {
     private final ItemSuggestions itemSuggestions;
     private final AuthorRepository authorRepository;
     private final LatestList latestList;
+    private final ShoppingListRepository shoppingListRepository;
 
     public ShoppingListSuggest(ShoppingListAdd shoppingListAdd, ItemSuggestions itemSuggestions,
-                               AuthorRepository authorRepository, LatestList latestList) {
+                               AuthorRepository authorRepository, LatestList latestList,
+                               ShoppingListRepository shoppingListRepository) {
         this.shoppingListAdd = shoppingListAdd;
         this.itemSuggestions = itemSuggestions;
         this.authorRepository = authorRepository;
         this.latestList = latestList;
+        this.shoppingListRepository = shoppingListRepository;
     }
 
     @Override
@@ -42,6 +46,11 @@ public class ShoppingListSuggest implements ConditionalReplier {
         for (String suggestion : suggestions) {
             reply = shoppingListAdd.buildReplies(shoppingList, suggestion);
         }
+        shoppingList = latestList.get(authorId);
+        for (String suggestion : suggestions) {
+            shoppingList.setSuggested(suggestion);
+        }
+        shoppingListRepository.saveShoppingList(shoppingList);
         return reply;
     }
 }

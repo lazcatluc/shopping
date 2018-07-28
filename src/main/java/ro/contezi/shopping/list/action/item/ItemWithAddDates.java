@@ -15,10 +15,12 @@ class ItemWithAddDates {
     private final String name;
     private final long millisSinceLastAdded;
     private final double averageMillisBetweenBuys;
+    private final ZonedDateTime lastAdded;
 
     ItemWithAddDates(String name, Collection<ZonedDateTime> buyDates) {
         List<ZonedDateTime> sorted = new ArrayList<>(buyDates);
         Collections.sort(sorted);
+        lastAdded = sorted.get(sorted.size() - 1);
         millisSinceLastAdded =  MILLIS.between(sorted.get(sorted.size() - 1), ZonedDateTime.now());
         averageMillisBetweenBuys = IntStream.range(0, sorted.size() - 1)
                 .mapToLong(i -> MILLIS.between(sorted.get(i), sorted.get(i + 1)))
@@ -34,5 +36,9 @@ class ItemWithAddDates {
 
     String getName() {
         return name;
+    }
+
+    ZonedDateTime getLastAdded() {
+        return lastAdded;
     }
 }

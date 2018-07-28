@@ -19,7 +19,7 @@ public class ShoppingListAdd extends ShoppingListAction {
     }
 
     @Override
-    public void executeAction(String shoppingListId, String item) {
+    public void executeAction(String shoppingListId, String item, String sender) {
         ShoppingListItem shoppingListItem = getShoppingListRepository().add(shoppingListId, item);
         ShoppingItem shoppingItem = new ShoppingItem(shoppingListItem);
         simpMessagingTemplate.convertAndSend("/topic/items/"+shoppingListId, shoppingItem);

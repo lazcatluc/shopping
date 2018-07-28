@@ -4,7 +4,6 @@ import java.text.Normalizer;
 import java.util.Arrays;
 import java.util.Optional;
 
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import ro.contezi.shopping.facebook.FacebookMessage;
 import ro.contezi.shopping.facebook.FacebookQuickReply;
 import ro.contezi.shopping.facebook.MessageFromFacebook;
@@ -51,7 +50,7 @@ public abstract class ShoppingListAction implements ConditionalReplier {
         Arrays.stream(cleanText.split(","))
                 .map(ShoppingListAction::removeUnicode)
                 .map(String::trim)
-                .forEach(item -> executeAction(shoppingListId, item));
+                .forEach(item -> executeAction(shoppingListId, item, sender));
         String message = shoppingListView.displayShoppingList(getShoppingListRepository().get(shoppingListId));
         informOthers.informOthers(sender, shoppingList, message);
         return message;
@@ -71,7 +70,7 @@ public abstract class ShoppingListAction implements ConditionalReplier {
                 .replaceAll("[^\\x00-\\x7F]", "");
     }
 
-    protected abstract void executeAction(String shoppingListId, String item);
+    protected abstract void executeAction(String shoppingListId, String item, String sender);
 
     protected abstract String actionDescription();
 

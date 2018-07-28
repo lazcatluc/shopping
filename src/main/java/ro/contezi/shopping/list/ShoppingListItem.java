@@ -25,6 +25,8 @@ public class ShoppingListItem {
     private ZonedDateTime boughtDate;
     @Column
     private Double cost;
+    @Column
+    private Boolean suggested;
     
     public String getId() {
         return id;
@@ -93,5 +95,13 @@ public class ShoppingListItem {
 
     public void setCost(Double cost) {
         this.cost = cost;
+    }
+
+    public Boolean getSuggested() {
+        return suggested == null ? false : suggested;
+    }
+
+    public void setSuggested(Boolean suggested) {
+        this.suggested = suggested;
     }
 }
