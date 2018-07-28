@@ -71,6 +71,8 @@ public class Shopping {
     private String appVersion;
     @Value("${build.timestamp}")
     private String buildTimestamp;
+    @Value("${suggestionsSize:5}")
+    private int suggestionsSize;
     @Value("#{${users.default}}")
     private Map<String, String> user;
     @Value("#{${users.friend}}")
@@ -85,6 +87,8 @@ public class Shopping {
     private AuthorJpaRepository authorJpaRepository;
     @Value("${app.url}")
     private String applicationUrl;
+    @Autowired
+    private ShoppingListItemJpaRepository shoppingListItemJpaRepository;
 
     @Bean
     public JmsListenerContainerFactory<?> myFactory(ConnectionFactory connectionFactory,
@@ -101,7 +105,6 @@ public class Shopping {
         converter.setTypeIdPropertyName("_type");
         return converter;
     }
-
 
     @Bean
     public SignatureValidator signatureValidator() throws InvalidKeyException, NoSuchAlgorithmException {
@@ -137,6 +140,7 @@ public class Shopping {
     @Bean
     public Replier replyProvider() throws URISyntaxException {
         return new CompositeReplier(roseExcludingShares(rose(), openListStrings()), authorRepository(), Arrays.asList(
+                shoppingListSuggest(),
                 shoppingListAdd(),
                 shoppingListRemove(),
                 shoppingListBuy(),
@@ -208,6 +212,16 @@ public class Shopping {
     public ShoppingListAdd shoppingListAdd() {
         return new ShoppingListAdd(shoppingListRepository(), shoppingListView(), latestList(), informOthers(),
                 simpMessagingTemplate);
+    }
+
+    @Bean
+    public ItemSuggestions itemSuggestions() {
+        return new ItemSuggestions(shoppingListItemJpaRepository, suggestionsSize);
+    }
+
+    @Bean
+    public ShoppingListSuggest shoppingListSuggest() {
+        return new ShoppingListSuggest(shoppingListAdd(), itemSuggestions(), authorRepository(), latestList());
     }
 
     @Bean

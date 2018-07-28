@@ -39,7 +39,11 @@ public abstract class ShoppingListAction implements ConditionalReplier {
     }
 
     public String buildReplies(String shoppingListId, ShoppingItem shoppingItem) {
-        return buildReplies("", shoppingListRepository.find(shoppingListId), shoppingItem.getItemName());
+        return buildReplies(shoppingListRepository.find(shoppingListId), shoppingItem.getItemName());
+    }
+
+    public String buildReplies(ShoppingList shoppingList, String shoppingItemName) {
+        return buildReplies("", shoppingList, shoppingItemName);
     }
 
     protected String buildReplies(String sender, ShoppingList shoppingList, String cleanText) {

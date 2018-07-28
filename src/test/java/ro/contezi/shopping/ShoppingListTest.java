@@ -12,6 +12,7 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import ro.contezi.shopping.facebook.FacebookMessage;
@@ -29,7 +30,7 @@ public class ShoppingListTest {
 
     @Autowired
     private Users users;
-    
+
     @Autowired
     private LatestList latestList;
 
@@ -38,6 +39,9 @@ public class ShoppingListTest {
 
     @Autowired
     private ConfigurableUser defaultUser;
+
+    @Autowired
+    private List<? extends JpaRepository<?, ?>> jpaRepositories;
 
     private Users.Action user;
 
@@ -50,12 +54,24 @@ public class ShoppingListTest {
     @After
     public void after() {
         messages.clear();
+        boolean foundError;
+        do {
+            foundError = false;
+            for (JpaRepository<?, ?> jpaRepository : jpaRepositories) {
+                try {
+                    jpaRepository.deleteAll();
+                } catch (RuntimeException re) {
+                    LOGGER.debug("", re);
+                    foundError = true;
+                }
+            }
+        } while (foundError);
     }
 
     @Test
     public void getsLatestList() {
         ShoppingList myList = latestList();
-        
+
         assertThat(myList.getAuthor().getFirstName()).isEqualTo(defaultUser.getFirstName());
     }
 
@@ -79,11 +95,38 @@ public class ShoppingListTest {
             .contains("cheese=true")
             .contains("apples=false")
             .doesNotContain("bread");
-        
+
         user.startsANewList();
 
         assertLatestList()
             .doesNotContain("cheese");
+    }
+
+    @Test
+    public void getsSuggestionsInOrderOfMostRelevant() throws Exception {
+        user.says("new")
+            .adds("cheese")
+            .adds("water")
+            .adds("cola")
+            .buys("cheese")
+            .buys("water");
+        user.says("new")
+            .adds("cheese")
+            .adds("water")
+            .adds("cola")
+            .buys("cheese")
+            .buys("water");
+        user.says("new")
+            .adds("water")
+            .adds("cheese")
+            .buys("cheese")
+            .buys("water");
+        user.says("new")
+            .adds("cheese")
+            .buys("cheese");
+        user.says("new")
+            .says("suggest");
+        assertLatestList().contains("items=[cola=false, water=false, cheese=false]");
     }
 
     @Test
